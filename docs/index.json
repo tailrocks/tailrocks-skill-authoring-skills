@@ -1,0 +1,34 @@
+[
+  {
+    "name": "tailrocks-skill-audit",
+    "description": ">-",
+    "argumentHint": "<skill name>|all",
+    "overview": "skills/tailrocks-skill-audit/index.md",
+    "definition": "skills/tailrocks-skill-audit/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-audit/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-create",
+    "description": ">-",
+    "argumentHint": "<capability or observed failure>",
+    "overview": "skills/tailrocks-skill-create/index.md",
+    "definition": "skills/tailrocks-skill-create/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-create/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-refactor",
+    "description": ">-",
+    "argumentHint": "<skill or skill family> <transformation>",
+    "overview": "skills/tailrocks-skill-refactor/index.md",
+    "definition": "skills/tailrocks-skill-refactor/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-refactor/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-update",
+    "description": ">-",
+    "argumentHint": "<skill name>",
+    "overview": "skills/tailrocks-skill-update/index.md",
+    "definition": "skills/tailrocks-skill-update/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-update/SKILL.md"
+  }
+]
