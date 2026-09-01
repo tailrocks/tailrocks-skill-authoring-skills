@@ -1,11 +1,11 @@
 ---
 title: "Tailrocks: tailrocks-skill-refactor"
-description: ">-"
+description: " Use only when the user explicitly requests this skill. Restructure skill ownership while preserving observable behavior and public contracts. Do not use for semantic edits or contract-breaking migration."
 ---
 
 Generated from [tailrocks-skill-refactor/SKILL.md](https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-refactor/SKILL.md).
 
->-
+ Use only when the user explicitly requests this skill. Restructure skill ownership while preserving observable behavior and public contracts. Do not use for semantic edits or contract-breaking migration.
 
 [Read the complete skill definition](definition.md).
 

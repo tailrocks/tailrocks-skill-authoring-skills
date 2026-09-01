@@ -1,7 +1,7 @@
 [
   {
     "name": "tailrocks-skill-audit",
-    "description": ">-",
+    "description": " Use only when the user explicitly requests this skill. Inspect one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Never edits audited skills or wiring; writes only skill-audits/ reports.",
     "argumentHint": "<skill name>|all",
     "overview": "skills/tailrocks-skill-audit/index.md",
     "definition": "skills/tailrocks-skill-audit/definition.md",
@@ -9,7 +9,7 @@
   },
   {
     "name": "tailrocks-skill-create",
-    "description": ">-",
+    "description": " Use only when the user explicitly requests this skill. Create a new agent skill for an evidenced responsibility with no owner, using the target repository's policy. Do not use for existing skills or mechanical gates.",
     "argumentHint": "<capability or observed failure>",
     "overview": "skills/tailrocks-skill-create/index.md",
     "definition": "skills/tailrocks-skill-create/definition.md",
@@ -17,7 +17,7 @@
   },
   {
     "name": "tailrocks-skill-refactor",
-    "description": ">-",
+    "description": " Use only when the user explicitly requests this skill. Restructure skill ownership while preserving observable behavior and public contracts. Do not use for semantic edits or contract-breaking migration.",
     "argumentHint": "<skill or skill family> <transformation>",
     "overview": "skills/tailrocks-skill-refactor/index.md",
     "definition": "skills/tailrocks-skill-refactor/definition.md",
@@ -25,7 +25,7 @@
   },
   {
     "name": "tailrocks-skill-update",
-    "description": ">-",
+    "description": " Use only when the user explicitly requests this skill. Improve an existing skill in place while preserving its responsibility and public contract. Includes applying selected audit findings; excludes split, merge, rename, and migration.",
     "argumentHint": "<skill name>",
     "overview": "skills/tailrocks-skill-update/index.md",
     "definition": "skills/tailrocks-skill-update/definition.md",

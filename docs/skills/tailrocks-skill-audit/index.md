@@ -1,11 +1,11 @@
 ---
 title: "Tailrocks: tailrocks-skill-audit"
-description: ">-"
+description: " Use only when the user explicitly requests this skill. Inspect one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Never edits audited skills or wiring; writes only skill-audits/ reports."
 ---
 
 Generated from [tailrocks-skill-audit/SKILL.md](https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-audit/SKILL.md).
 
->-
+ Use only when the user explicitly requests this skill. Inspect one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Never edits audited skills or wiring; writes only skill-audits/ reports.
 
 [Read the complete skill definition](definition.md).
 
