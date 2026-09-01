@@ -1,39 +1,16 @@
 {
   "name": "tailrocks-skill-authoring-skills",
   "version": "0.28.0",
-  "description": "Cross-agent Tailrocks skills for strict Rust, Axum, TypeScript, TanStack, native macOS Swift with Liquid Glass, code-health ratchets, and the roadmap delivery pipeline (idea, brainstorm, research, record-decision, finalize, plan, reconcile, portable goal handoff)",
+  "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
   "keywords": [
-    "tailrocks",
-    "rust",
-    "edition-2024",
-    "skills",
-    "best-practices",
-    "clippy",
-    "rustfmt",
-    "axum",
-    "typescript",
-    "bun",
-    "tanstack",
-    "cargo-deny",
-    "nextest",
-    "mise",
-    "workspace",
-    "code-review",
-    "root-cause",
-    "architecture",
-    "redesign",
-    "first-principles",
-    "correctness",
-    "research",
-    "roadmap",
-    "planning",
-    "goal",
-    "swift",
-    "swiftui",
-    "appkit",
-    "macos",
-    "liquid-glass",
-    "accessibility"
+    "agent-skills",
+    "skill-authoring",
+    "skill-audit",
+    "skill-design",
+    "skill-refactor",
+    "skill-update",
+    "routing",
+    "contracts"
   ],
   "author": {
     "name": "tailrocks",
@@ -43,7 +20,21 @@
   "license": "Apache-2.0",
   "skills": "./skills/",
   "interface": {
-    "displayName": "Tailrocks Skills",
-    "shortDescription": "Strict Rust, TypeScript, and native macOS engineering workflows"
-  }
+    "displayName": "Skill Authoring Skills",
+    "shortDescription": "Create, audit, update, and refactor agent skills.",
+    "longDescription": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
+    "capabilities": [
+      "Audit",
+      "Create",
+      "Update",
+      "Refactor"
+    ],
+    "websiteURL": "https://github.com/tailrocks/tailrocks-skill-authoring-skills",
+    "defaultPrompt": [
+      "Audit this skill.",
+      "Create a skill for this responsibility.",
+      "Refactor this skill without changing its contract."
+    ]
+  },
+  "repository": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
 }

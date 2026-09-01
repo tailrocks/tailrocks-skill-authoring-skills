@@ -11,9 +11,9 @@
     {
       "name": "tailrocks-skill-authoring-skills",
       "source": "./",
-      "description": "Cross-agent Tailrocks skills for strict Rust, Axum, TypeScript, TanStack, native macOS Swift with Liquid Glass, code-health ratchets, and the roadmap delivery pipeline (idea, brainstorm, research, record-decision, finalize, plan, reconcile, portable goal handoff)",
+      "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
       "version": "0.28.0",
-      "category": "workflow"
+      "category": "Skill Authoring Skills"
     }
   ]
 }

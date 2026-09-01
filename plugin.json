@@ -1,5 +1,17 @@
 {
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "tailrocks-skill-authoring-skills",
-  "description": "Cross-agent Tailrocks skills for strict Rust, Axum, TypeScript, TanStack, native macOS Swift with Liquid Glass, code-health ratchets, and the roadmap delivery pipeline (idea, brainstorm, research, record-decision, finalize, plan, reconcile, portable goal handoff)"
+  "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
+  "keywords": [
+    "agent-skills",
+    "skill-authoring",
+    "skill-audit",
+    "skill-design",
+    "skill-refactor",
+    "skill-update",
+    "routing",
+    "contracts"
+  ],
+  "homepage": "https://github.com/tailrocks/tailrocks-skill-authoring-skills",
+  "repository": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
 }
