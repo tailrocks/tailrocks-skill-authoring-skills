@@ -96,7 +96,11 @@ selection.
   ZCode drops the whole skill over it). Keep key triggers inside the
   first ~250 chars (ZCode injects only a 250-char excerpt; Claude
   Code truncates `description` + `when_to_use` at 1,536 per entry;
-  Codex shortens descriptions first past 2% of context).
+  Codex lists name+description+path under min(2% context, 8,000
+  chars): descriptions shorten first, skills may drop with a
+  warning). `allow_implicit_invocation: false` stops implicit match
+  but the entry still occupies Codex's list budget — front-load
+  trigger words regardless.
 - Manual-only trees add their guard sentence verbatim and budget the
   rest (250 characters after the guard, here). The guard consumes
   the head of ZCode's 250-char excerpt window, so on ZCode-targeted
@@ -141,11 +145,13 @@ live in `description` itself.
 | Codex | `description` only (`name` aids) | `agents/openai.yaml → allow_implicit_invocation`; `default_prompt` / `short_description` are picker UI, never matching |
 | Muse | `name` + `description` | `disable-model-invocation`, `user-invocable` honored |
 | ZCode (GLM host) | `name` + 250-char `description` excerpt under a shared budget | `description` over 1,024 drops the whole skill; body over 100KB truncates |
-| Kimi | `description` + `whenToUse` (`when-to-use`, `when_to_use` aliases) | `disableModelInvocation`; never set `type: flow` on an invokable skill |
-| Gemini CLI / Antigravity | `name` + `description` only (Antigravity: `description` required, `name` optional) | No other trigger keys exist on either host |
+| Kimi | `description` + `whenToUse` (`when-to-use`, `when_to_use` aliases) | `disableModelInvocation`; never set `type: flow` on an invokable skill; nesting cap 3 |
+| Gemini CLI / Antigravity | `name` + `description` only (agy 1.2.17: both required) | No other trigger keys exist on either host |
 | Grok Build | `description` + `when-to-use` + `paths` | `user-invocable` hides from the model too unless literally `true`; `allowed-tools` accepted, not enforced |
 | Qwen Code | `description` (what + when + user keywords) | Both invocation flags honored; `priority` sorts the `/skills` list only |
 | OpenCode | `name` + prose match via the `skill` tool | Ignores `disable-model-invocation` / `user-invocable`; gate is `permission.skill: ask` |
+| Amp | `name` + `description` (model-selected; first `name` wins across 11 levels) | No gating field observed; `amp skill info` inspects |
+| Cursor | `name` + `description` | `disable-model-invocation: true` is the default (explicit-only); omit for auto-invoke |
 
 ### YAML hygiene
 
@@ -160,8 +166,9 @@ Triggering dies silently on malformed metadata:
   no reserved words (`anthropic`, `claude`).
 - `description`: non-empty, at most 1,024 chars, no XML tags.
 - Gate every description change with `skills-ref validate` (spec),
-  `muse skills validate` (Muse), and `claude plugin validate`
-  (Claude Code); test on each model family shipped to.
+  `muse skills validate` (Muse), `claude plugin validate --strict`
+  (Claude Code), `grok plugin validate`, and `agy plugin validate`;
+  test on each model family shipped to.
 
 ## Naming and examples
 

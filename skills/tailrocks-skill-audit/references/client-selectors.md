@@ -6,12 +6,12 @@
 |---|---|---|
 | Codex CLI | `$<skill>` bare, `/skills` picker | Only documented explicit forms. |
 | Claude Code | `/<skill>`, `/<plugin>:<skill>` | Leading `/name` runs directly; after prose it only permits that turn. |
-| Kimi | `/skill:<name>` | Slash-colon. `/<name>` shorthand unverified. |
-| Cursor | `/<skill>` in chat, `/` menu in CLI | — |
+| Kimi | `/skill:<name>` | ONLY form; `/<name>` confirmed absent. |
+| Cursor | `/<skill>` in chat, `/` menu in CLI | Option+Enter pins a Custom Mode for the session. |
 | Muse | `/` picker + `/<skill>` | Bare slash verified; `/<plugin>:<skill>` unverified (picker-observed only). |
-| Grok Build | `/<skill>`, `/<plugin>:<skill>` | Plus `/local:`, `/user:` scope qualifiers; `/skills`, `grok inspect`. |
-| Amp | prose naming `plugin:skill` | No user-invokable skills exist (model-invoked only). |
-| OpenCode v1 | prose `Use the X skill…` via `skill` tool | No slash for skills; ignores `disable-model-invocation`/`user-invocable`; gate is `permission.skill: ask`. |
+| Grok Build | `/<skill>`, `/<plugin>:<skill>` | Plus `/user:` collision scope (confirmed via `grok inspect`); `/skills`, `grok inspect`. |
+| Amp | prose naming `<skill>` (model selects by name+description) | No slash form observed; `amp skill add <src>` installs, `amp skill info\|list` inspects. |
+| OpenCode | prose `Use the X skill…` via `skill` tool | No slash for skills; ignores `disable-model-invocation`/`user-invocable`; gate is `permission.skill: ask`. |
 | Gemini CLI / Antigravity | `/<skill>`, `/skills list` | Contract is `name`+`description` only. |
 | Qwen Code | `/<skill>`, `/skills` panel | Extension skills namespaced `<ext>:<name>`. |
 | ZCode (GLM host) | `$skill-name` tag, `/` menu | Names+250-char excerpts injected per turn under a shared budget. |
@@ -32,3 +32,6 @@
   `interface.default_prompt` ("optional surrounding prompt to use the
   skill with") — and it does NOT participate in implicit matching.
 - **`argument-hint` drives no client's triggering** — display hint only.
+- **Amp `plugin:skill` namespacing is unverified.** Amp dedupes by
+  frontmatter `name` with first-wins precedence; name the skill
+  plainly in prose and verify any qualifier before relying on it.

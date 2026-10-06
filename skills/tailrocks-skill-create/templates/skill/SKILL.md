@@ -14,7 +14,9 @@ description: >-
 # Portable keys only: name, description, license, compatibility,
 # metadata, allowed-tools. argument-hint, disable-model-invocation,
 # user-invocable, and when_to_use are host extensions — strip them
-# when packaging for claude.ai / Skills API.
+# when packaging for claude.ai / Skills API. Kimi: use arguments:
+# with $<name> expansion instead of argument-hint; never type: flow
+# on an invokable skill.
 argument-hint: "<arguments>"
 disable-model-invocation: true
 license: Apache-2.0

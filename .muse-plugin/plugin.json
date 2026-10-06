@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "name": "tailrocks-skill-authoring-skills",
+  "version": "0.28.0",
+  "displayName": "Tailrocks Skill Authoring Skills",
+  "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
+  "compat": {
+    "source": "native",
+    "manifestDir": ".muse-plugin"
+  },
+  "capabilities": {
+    "skills": [
+      {
+        "id": "tailrocks-skill-audit",
+        "path": "skills/tailrocks-skill-audit/SKILL.md"
+      },
+      {
+        "id": "tailrocks-skill-create",
+        "path": "skills/tailrocks-skill-create/SKILL.md"
+      },
+      {
+        "id": "tailrocks-skill-refactor",
+        "path": "skills/tailrocks-skill-refactor/SKILL.md"
+      },
+      {
+        "id": "tailrocks-skill-update",
+        "path": "skills/tailrocks-skill-update/SKILL.md"
+      }
+    ],
+    "hooks": [],
+    "mcpServers": [],
+    "commands": [],
+    "reminders": []
+  }
+}

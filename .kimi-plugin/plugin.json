@@ -23,18 +23,8 @@
     "displayName": "Skill Authoring Skills",
     "shortDescription": "Create, audit, update, and refactor agent skills.",
     "longDescription": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
-    "capabilities": [
-      "Audit",
-      "Create",
-      "Update",
-      "Refactor"
-    ],
-    "websiteURL": "https://github.com/tailrocks/tailrocks-skill-authoring-skills",
-    "defaultPrompt": [
-      "Audit this skill.",
-      "Create a skill for this responsibility.",
-      "Refactor this skill without changing its contract."
-    ]
+    "developerName": "Tailrocks",
+    "websiteURL": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
   },
   "repository": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
 }
