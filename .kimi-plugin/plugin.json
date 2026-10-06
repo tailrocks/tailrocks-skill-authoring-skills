@@ -25,5 +25,6 @@
     "longDescription": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
     "developerName": "Tailrocks",
     "websiteURL": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
-  }
+  },
+  "repository": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
 }
