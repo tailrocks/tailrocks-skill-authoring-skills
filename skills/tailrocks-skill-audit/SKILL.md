@@ -1,7 +1,7 @@
 ---
 name: tailrocks-skill-audit
 description: >-
-  Use only when the user explicitly requests this skill. Inspect one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Never edits audited skills or wiring; writes only skill-audits/ reports.
+  Use only when the user explicitly requests this skill. Check or review one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Read-only: fixes route to tailrocks-skill-update, restructuring to tailrocks-skill-refactor.
 argument-hint: "<skill name>|all"
 disable-model-invocation: true
 license: Apache-2.0
@@ -20,6 +20,10 @@ is the evidence a fix is applied from, and
 Read-only on everything audited. The single write is the report file
 under `skill-audits/`; never edit a skill, frozen legacy evidence, or a wire — a defect
 present does not imply permission to remove it.
+
+The user's instructions take precedence over this skill's guidelines
+where they conflict; refusal and stop boundaries below lift only
+through the authorization they name, never a turn-level instruction.
 
 ## Modes
 

@@ -107,7 +107,8 @@ outcomes.
 
 The authored authorities live under `skill-authoring/references/` as
 `operational-contract.md`, `responsibility-topology.md`,
-`context-routing.md`, and `house-wiring.md`. This audit-local reference is a
+`context-routing.md`, `house-wiring.md`, and `client-selectors.md`.
+This audit-local reference is a
 compatibility bundle for the read-only judge; it does not own shared policy.
 Authoring routers load this compatibility bundle at the step that needs it and
 never paraphrase doctrine or preload the audit router. Generated local copies
@@ -154,19 +155,103 @@ Rules for a file deliverable:
 
 ## The description
 
-The description is the trigger, nothing else.
+The description is the trigger, nothing else. Only `name` +
+`description` preload on every turn; the body loads only after
+selection.
 
-- **Triggering conditions only — never a workflow summary.** A
-  description that sketches the process becomes a shortcut: the agent
-  follows the sketch and skips the body, silently dropping every rule
-  that lives there. Symptoms, situations, and content types decide
-  triggering; the body owns the how.
-- Carry the words a routing agent would match on: the artifact names,
-  symptoms, and task verbs the skill serves — and the do-not-use clause
-  naming the neighboring skill's territory.
-- Manual-only trees add their guard sentence verbatim and budget the rest
-  (250 characters after the guard, here). Third person, no first-person
-  offers.
+- **Capability-first, third person.** Open with what the skill does as
+  a concrete third-person capability clause — never `I can…` / `You
+  can…` (injected into the system prompt; POV inconsistency breaks
+  discovery). Pattern: `<capability clause>. Use when <trigger
+  contexts>.`
+- **Trigger verbs are the user's words, front-loaded.** Include the
+  literal nouns/verbs users will say: task verbs, artifact names, file
+  types, cross-platform aliases (`PR/MR/change/CL`). Troubleshooting
+  step #1 for "skill not triggering" on every client is "description
+  lacks the keywords users naturally say." Key use case + trigger
+  words FIRST — truncation cuts the tail first.
+- **Sibling routing, not just behavior guards.** Each description
+  names its own trigger AND disambiguates its nearest siblings by
+  object cardinality (`a PR / PR #N` vs `branches/PRs/selected work`)
+  and file-vs-instance (`template file / default for future PRs` vs
+  `this PR's title/body`). A `Do not X` clause that does not name the
+  owning skill routes nowhere — name it: `Do not refresh metadata
+  (tailrocks-refresh-pr owns that).`
+- **Procedures and workflow summaries are banned.** Middle sentences
+  that describe behavior (`Verify target, checks, reviews…`) are dead
+  weight for matching and become a shortcut the agent follows instead
+  of the body. Also banned: XML tags (spec rejection), vague scope
+  (`Helps with documents`), instructions.
+- **Caps.** `description` hard cap 1,024 chars (Agent Skills spec;
+  ZCode drops the whole skill over it). Keep key triggers inside the
+  first ~250 chars (ZCode injects only a 250-char excerpt; Claude
+  Code truncates `description` + `when_to_use` at 1,536 per entry;
+  Codex shortens descriptions first past 2% of context).
+- Manual-only trees add their guard sentence verbatim and budget the
+  rest (250 characters after the guard, here). The guard consumes
+  the head of ZCode's 250-char excerpt window, so on ZCode-targeted
+  trees the first trigger words after the guard must carry the match
+  alone.
+
+### The `when_to_use` trigger field
+
+`when_to_use` (Claude Code extension, snake_case — the only
+non-hyphenated field) holds extra trigger phrases and example
+requests. It is appended to `description` in the listing and counts
+toward the same 1,536-char cap. Codex ignores unknown frontmatter:
+keep portable triggers in `description` itself; use this field only
+for overflow and negatives.
+
+Template:
+
+```yaml
+when_to_use: >-
+  <2-4 example user requests in the user's own words>.
+  Not for <nearest sibling trigger> — that belongs to <owning skill>.
+  Not for <second overlap> — that belongs to <owning skill>.
+```
+
+Rules: example requests must read like typed prompts, not paraphrased
+capabilities. Sibling routing lives here when `description` is full.
+Kimi accepts `whenToUse` (aliases `when-to-use`, `when_to_use`) as
+its dedicated trigger field; Grok accepts `when-to-use` /
+`when_to_use` plus `paths` globs. Strip this key when packaging for
+claude.ai / Skills API (spec allows only `name, description,
+license, compatibility, metadata, allowed-tools` — unexpected keys
+hard-error packaging).
+
+### Trigger fields by client
+
+Match text and gates differ per host; triggers portable everywhere
+live in `description` itself.
+
+| Client | Match text | Gate / switch |
+|---|---|---|
+| Claude Code | `description` + `when_to_use` (appended; 1,536 chars combined) | `paths` globs gate by file; `disable-model-invocation: true` removes from context; `user-invocable: false` hides `/` entry only |
+| Codex | `description` only (`name` aids) | `agents/openai.yaml → allow_implicit_invocation`; `default_prompt` / `short_description` are picker UI, never matching |
+| Muse | `name` + `description` | `disable-model-invocation`, `user-invocable` honored |
+| ZCode (GLM host) | `name` + 250-char `description` excerpt under a shared budget | `description` over 1,024 drops the whole skill; body over 100KB truncates |
+| Kimi | `description` + `whenToUse` (`when-to-use`, `when_to_use` aliases) | `disableModelInvocation`; never set `type: flow` on an invokable skill |
+| Gemini CLI / Antigravity | `name` + `description` only (Antigravity: `description` required, `name` optional) | No other trigger keys exist on either host |
+| Grok Build | `description` + `when-to-use` + `paths` | `user-invocable` hides from the model too unless literally `true`; `allowed-tools` accepted, not enforced |
+| Qwen Code | `description` (what + when + user keywords) | Both invocation flags honored; `priority` sorts the `/skills` list only |
+| OpenCode | `name` + prose match via the `skill` tool | Ignores `disable-model-invocation` / `user-invocable`; gate is `permission.skill: ask` |
+
+### YAML hygiene
+
+Triggering dies silently on malformed metadata:
+
+- Opening `---` is the file's first line.
+- Malformed frontmatter loads with empty metadata: manual `/name`
+  still works while auto-trigger silently dies. Debug with
+  `claude --debug` and `claude plugin validate`.
+- `name`: 1–64 chars, lowercase alphanumerics plus hyphens, no
+  leading/trailing/consecutive hyphens, matches the directory name,
+  no reserved words (`anthropic`, `claude`).
+- `description`: non-empty, at most 1,024 chars, no XML tags.
+- Gate every description change with `skills-ref validate` (spec),
+  `muse skills validate` (Muse), and `claude plugin validate`
+  (Claude Code); test on each model family shipped to.
 
 ## Naming and examples
 
