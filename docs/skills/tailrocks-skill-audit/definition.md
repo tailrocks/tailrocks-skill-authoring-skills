@@ -20,6 +20,10 @@ Read-only on everything audited. The single write is the report file
 under `skill-audits/`; never edit a skill, frozen legacy evidence, or a wire — a defect
 present does not imply permission to remove it.
 
+The user's instructions take precedence over this skill's guidelines
+where they conflict; refusal and stop boundaries below lift only
+through the authorization they name, never a turn-level instruction.
+
 ## Modes
 
 - `<skill name>`: audit one skill.

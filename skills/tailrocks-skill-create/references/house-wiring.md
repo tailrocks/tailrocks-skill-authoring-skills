@@ -21,12 +21,34 @@ Tailrocks profile uses: `name`, `license: Apache-2.0`, a description
 starting exactly with the guard sentence ("Use only when the user
 explicitly requests this skill.") with **250 characters of budget after
 it**, `disable-model-invocation: true`, `user-invocable: true`, and an
-`argument-hint` when the skill takes modes or targets.
-`agents/openai.yaml` carries `policy.allow_implicit_invocation: false`
-plus the interface block. Bodies stay source-neutral — no client-specific
-instructions; clients that ignore manual-only policy are held by the
-guard sentence alone, which is why it is load-bearing and never
-paraphrased.
+`argument-hint` when the skill takes modes or targets. `MODEL_POLICY`
+skills add a `when_to_use` trigger field (Kimi accepts `whenToUse` /
+`when-to-use`, Grok accepts `when-to-use` plus `paths` globs);
+`allowed-tools` and `metadata` are the only other portable breadth
+keys. `agents/openai.yaml` carries
+`policy.allow_implicit_invocation: false` plus the interface block,
+whose `default_prompt` uses the bare `$<skill>` form — never
+`$plugin:skill`, which is not a documented Codex invocation — and
+drives the Codex picker UI only, never implicit matching. Bodies stay
+source-neutral — no client-specific instructions; OpenCode and
+Antigravity ignore manual-only policy, so on those two clients the
+guard sentence alone holds the boundary, which is why it is
+load-bearing and never paraphrased.
+
+Frontmatter keys are not portable. `argument-hint`,
+`disable-model-invocation`, and `user-invocable` are Claude-Code-family
+extensions: packaging for claude.ai or the Skills API hard-errors on
+them (only `name`, `description`, `license`, `compatibility`,
+`metadata`, `allowed-tools` survive), so strip them when that is the
+target. Per-client support: Grok honors `argument-hint` plus both
+invocation flags but ignores `license`, and only the literal
+`user-invocable: true` counts; Kimi ignores `argument-hint` (it uses
+`arguments:` with `$<name>` expansion) and `type: flow` must never be
+set on an invokable skill; Qwen validates `name` against its own
+pattern; OpenCode ignores unknown frontmatter including the manual-only
+flags. Explicit selectors per client live in the shared
+`client-selectors.md` reference (copies in create and audit) — its
+bare-`$` Codex form is normative.
 
 House prose rules that apply inside the skill: mermaid for any drawn
 flow (a one-line arrow sequence in prose is fine; an ASCII diagram is
@@ -64,10 +86,16 @@ trigger on that invocation and grants no new authority.
 ## Validation
 
 ```sh
-mise run docs        # regenerate derived pages
-mise run lint        # skill + manifest validator (description budget, catalog, lockstep)
-mise run docs:check  # generated files not stale
+mise run docs           # regenerate derived pages
+mise run lint           # skill + manifest validator (description budget, catalog, lockstep)
+mise run docs:check     # generated files not stale
+claude plugin validate  # frontmatter loads; trigger metadata present
+skills-ref validate     # Agent Skills spec shape (name, 1024-char description, no XML)
+muse skills validate    # Muse catalog validity
 ```
+
+Description and trigger-field changes also run the checklist in
+`skills/tailrocks-skill-audit/references/testing-doctrine.md`.
 
 Run each once. Validator repair permits at most two matched, in-scope passes.
 Stop immediately for an unmatched error, unavailable tool, or exhausted bound;

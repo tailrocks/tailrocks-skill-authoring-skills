@@ -62,6 +62,34 @@ counter-examples masquerade as hits. Treat variance as a metric: when
 wording binds, repetitions converge on one shape; five interpretations
 across five runs means the form is wrong, not the word count.
 
+## Trigger validation checklist
+
+Run per skill on every description/trigger-field change:
+
+1. **YAML parses.** Malformed frontmatter loads with empty metadata:
+   manual `/name` still works while auto-trigger silently dies (debug:
+   `claude --debug`, `claude plugin validate`).
+2. **Line-1 frontmatter.** Opening `---` must be the file's first line.
+3. **Spec shape.** `name` 1–64 chars, lowercase alnum + hyphens, no
+   leading/trailing/consecutive hyphens, matches directory name, no
+   reserved words (`anthropic`, `claude`). `description` non-empty,
+   ≤1,024 chars, no XML tags.
+4. **Length caps.** Key trigger inside first ~250 chars (ZCode excerpt);
+   `description` + `when_to_use` ≤1,536 (Claude Code listing); whole set
+   survives Codex's 2%-of-context / 8k-char initial list (shorten
+   descriptions first on overflow).
+5. **Trigger-matrix test (5 cases).** Direct request fires; indirect
+   paraphrase fires; incomplete input asks instead of firing; negative
+   case (sibling's trigger) does NOT fire; edge/unsupported action does
+   NOT fire. Record hit/miss per case in the evidence record.
+6. **Gates.** `skills-ref validate` (spec), `muse skills validate`
+   (Muse), `claude plugin validate` (Claude Code). Test on every model
+   family shipped to (Haiku needs more guidance than Sonnet/Opus).
+7. **Flag coherence.** Side-effect workflows (merge/deploy/land) default
+   to explicit-only (`disable-model-invocation: true` /
+   `allow_implicit_invocation: false`); OpenCode and Antigravity ignore
+   those flags, so the description must carry the full boundary there.
+
 ## Acceptance cases that earn their place
 
 - **Realistic prompts.** The kind a user actually types — concrete

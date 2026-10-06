@@ -20,11 +20,11 @@ Each layer has its own monotonic ID prefix:
 
 | Layer | Prefix | Covers |
 |---|---|---|
-| Description | `DESC-n` | Workflow summary, missing triggers, budget breach, missing do-not-use boundary |
+| Description | `DESC-n` | Trigger wording, spec caps, sibling routing, precedence, flag coherence, YAML hygiene |
 | Router | `RTR-n` | Dilution, buried load-bearing lines, reference summaries, concept explanations, stacked musts, budget |
 | References | `REF-n` | Content in the wrong layer, unrouted depth, duplication of the router |
 | Evidence | `EVAL-n` | Missing durable baseline receipts, unrealistic proof, absent refusal coverage, or missing deterministic checks |
-| Wiring | `WIRE-n` | Catalog, client metadata, generated docs, install/index documents, version lockstep |
+| Wiring | `WIRE-n` | Catalog, client metadata, selector form, generated docs, install/index documents, version lockstep |
 | Overlap | `OVL-n` | Two skills owning one responsibility |
 
 Prefix names the artifact layer that owns the fix. Add one or more dimensions:
@@ -33,6 +33,31 @@ Prefix names the artifact layer that owns the fix. Add one or more dimensions:
 router instruction is `RTR-n` with `contract` and `security`; missing outcome
 proof is `EVAL-n` with `behavior`. `EVAL` remains the stable historical ID
 prefix; it names the Evidence layer and does not authorize or imply an eval tree.
+
+## Description and wiring checks
+
+Checkable DESC/WIRE rules; each maps to one finding with file:line or
+quoted-phrase evidence:
+
+- `description` is non-empty, at most 1,024 chars, no XML tags; `name`
+  matches 1–64 chars, lowercase alnum plus hyphens, and the directory.
+- Key trigger inside the first ~250 chars; `description` +
+  `when_to_use` at most 1,536 chars.
+- `MODEL_POLICY` skills carry trigger phrases in `when_to_use` (or
+  `whenToUse` / `when-to-use` for Kimi); manual-only trees carry the
+  guard sentence verbatim.
+- Every `Do not X` names the owning skill; procedures and workflow
+  summaries are absent.
+- Each body states user-instruction precedence with its refusal
+  carve-out (see `runtime-trust.md`).
+- Flag coherence: `disable-model-invocation` and
+  `allow_implicit_invocation` agree (both manual-only or both
+  model-policy); OpenCode/Antigravity exposure is explicit.
+- `agents/openai.yaml` uses bare `$<skill>` — `$plugin:skill`
+  anywhere is a WIRE finding; `default_prompt` is picker framing,
+  never a trigger.
+- Frontmatter `---` is line 1 and YAML parses; the `skills-ref`,
+  `muse skills`, and `claude plugin` validators are green.
 
 ## Finding shape
 
