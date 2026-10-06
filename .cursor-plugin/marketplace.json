@@ -1,0 +1,16 @@
+{
+  "name": "tailrocks-skill-authoring-skills",
+  "metadata": {
+    "description": "Self-hosted marketplace for the tailrocks-skill-authoring-skills plugin. Add this repository directly: cursor-agent plugin marketplace add https://github.com/tailrocks/tailrocks-skill-authoring-skills"
+  },
+  "owner": {
+    "name": "tailrocks"
+  },
+  "plugins": [
+    {
+      "name": "tailrocks-skill-authoring-skills",
+      "source": "./",
+      "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability."
+    }
+  ]
+}

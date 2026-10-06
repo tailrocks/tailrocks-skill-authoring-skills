@@ -83,12 +83,18 @@ Run per skill on every description/trigger-field change:
    case (sibling's trigger) does NOT fire; edge/unsupported action does
    NOT fire. Record hit/miss per case in the evidence record.
 6. **Gates.** `skills-ref validate` (spec), `muse skills validate`
-   (Muse), `claude plugin validate` (Claude Code). Test on every model
-   family shipped to (Haiku needs more guidance than Sonnet/Opus).
+   per skill + `muse plugins validate` (Muse), `claude plugin
+   validate --strict` (Claude Code), `grok plugin validate` (Grok),
+   `agy plugin validate` (Antigravity). Kimi has no manifest CLI:
+   read `/plugins info` diagnostics and `/plugins reload` in the TUI
+   (`kimi doctor` checks config files only — never a manifest gate).
+   Test on every model family shipped to (Haiku needs more guidance
+   than Sonnet/Opus).
 7. **Flag coherence.** Side-effect workflows (merge/deploy/land) default
    to explicit-only (`disable-model-invocation: true` /
    `allow_implicit_invocation: false`); OpenCode and Antigravity ignore
-   those flags, so the description must carry the full boundary there.
+   those flags, and Amp observes no gating field, so the description
+   must carry the full boundary there.
 
 ## Acceptance cases that earn their place
 

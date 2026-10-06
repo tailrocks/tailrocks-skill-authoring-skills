@@ -55,9 +55,26 @@ quoted-phrase evidence:
   model-policy); OpenCode/Antigravity exposure is explicit.
 - `agents/openai.yaml` uses bare `$<skill>` — `$plugin:skill`
   anywhere is a WIRE finding; `default_prompt` is picker framing,
-  never a trigger.
+  never a trigger. Keys are snake_case.
+- No `extensions.com.openai` object coexists with
+  `.codex-plugin/plugin.json` — it would replace, not merge, the
+  overlay.
+- `.kimi-plugin/interface` holds only `displayName`,
+  `shortDescription`, `longDescription`, `developerName`,
+  `websiteURL` — `capabilities` or `defaultPrompt` there is a WIRE
+  finding.
+- Root `plugin.json` holds only the agy closed set (`name`,
+  `description`, `logo`, `suggestedPrompts`, `displayName`,
+  `version`, `disabled`) — `author`, `homepage`, `keywords`, or
+  `repository` there is a WIRE finding.
+- `version` matches across root `plugin.json`, the five client
+  manifests, and the Claude marketplace entry.
+- Every marketplace entry carries `name` + a resolvable `source`;
+  Codex entries also carry `policy.installation`,
+  `policy.authentication`, and `category`.
 - Frontmatter `---` is line 1 and YAML parses; the `skills-ref`,
-  `muse skills`, and `claude plugin` validators are green.
+  `muse skills`, `muse plugins`, `claude plugin --strict`, `grok
+  plugin`, and `agy plugin` validators are green.
 
 ## Finding shape
 
