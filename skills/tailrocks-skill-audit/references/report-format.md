@@ -52,7 +52,7 @@ quoted-phrase evidence:
   carve-out (see `runtime-trust.md`).
 - Flag coherence: `disable-model-invocation` and
   `allow_implicit_invocation` agree (both manual-only or both
-  model-policy); OpenCode/Antigravity/ZCode exposure is explicit
+  model-policy); OpenCode/Antigravity exposure is explicit
   and Amp observes no gating field.
 - `agents/openai.yaml` uses bare `$<skill>` — `$plugin:skill`
   anywhere is a WIRE finding; `default_prompt` is picker framing,
@@ -77,8 +77,7 @@ quoted-phrase evidence:
 - Frontmatter `---` is line 1 and YAML parses; the `skills-ref`,
   `muse skills`, `muse plugins`, `claude plugin --strict`, `grok
   plugin`, and `agy plugin` validators are green. Amp, OpenCode,
-  Cursor, and ZCode have no skill validator — discovery or UI
-  checks only.
+  and Cursor have no skill validator — discovery checks only.
 
 ## Finding shape
 

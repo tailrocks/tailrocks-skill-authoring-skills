@@ -43,14 +43,12 @@ trigger words regardless. `agents/openai.yaml` keys are snake_case:
 `interface.display_name`, `short_description`, `default_prompt`,
 `icon_small` / `icon_large`, `brand_color`;
 `dependencies.tools[]` declares MCP servers. Bodies stay
-source-neutral — no client-specific instructions; OpenCode,
-Antigravity, and ZCode ignore manual-only policy
-(`disable-model-invocation`, `user-invocable`, `argument-hint`,
-`compatibility`, `allowed-tools`, `agents/openai.yaml` — ZCode's
-frontmatter allowlist is exactly `name`, `description`,
-`when_to_use`, `license`, `metadata`, and all other keys are
-ignored), so on those three clients the guard sentence alone holds
-the boundary, which is why it is load-bearing and never paraphrased.
+source-neutral — no client-specific instructions; OpenCode and
+Antigravity ignore manual-only policy (`disable-model-invocation`,
+`user-invocable`, `argument-hint`, `compatibility`,
+`allowed-tools`, `agents/openai.yaml`), so on those two clients
+the guard sentence alone holds the boundary, which is why it is
+load-bearing and never paraphrased.
 
 Frontmatter keys are not portable. `argument-hint`,
 `disable-model-invocation`, and `user-invocable` are Claude-Code-family
@@ -68,7 +66,7 @@ validates `name` against its own pattern; OpenCode ignores unknown
 frontmatter including the manual-only flags; Muse accepts the full
 Tailrocks set (`muse skills validate <path>` reports no unknown
 fields); Cursor honors `paths` (legacy `globs` fallback),
-`disable-model-invocation`, `icon`, `color`, and `metadata`,
+`disable-model-invocation`, and `metadata`,
 requires `name` to match the parent folder, and auto-scopes
 monorepo-nested skill dirs by path; Amp reads `name` +
 `description` with no gating field, requires dir name == `name` in
@@ -291,24 +289,6 @@ first) or per-agent `tools.skill=false`. No install CLI, no
 validator — checklist only (caps `SKILL.md`, name+description,
 unique names, no deny).
 
-### ZCode
-
-No standalone skill marketplace: ship as a plugin with flat
-`skills/<name>/SKILL.md` (nested grouping dirs are not picked up).
-Manifest `.zcode-plugin/plugin.json`, falling back to
-`.claude-plugin/plugin.json`. Updates compare the `marketplace.json`
-entry `version` against the installed `plugin.json` version — bump
-the entry or no update is offered. Test through a local-directory
-marketplace. Frontmatter allowlist is exactly `name`, `description`,
-`when_to_use`, `license`, `metadata` — every other key is ignored,
-so manual-only flags die here. Every enabled skill injects `name` +
-a ≤250-char description excerpt per turn under one shared budget;
-overflow degrades to names only. No CLI validator: Settings →
-Skills → Refresh, read diagnostics (`description exceeds 1024
-chars`; missing `name`/`description` ignored with reason);
-`$zcode-configuration-guide` for config/symptom diagnosis. Model
-notes: `skill-authoring/references/glm-model-notes.md`.
-
 ### Frontmatter contract
 
 Behavior that must survive all targets lives in `description` +
@@ -332,9 +312,6 @@ directory and `description` to the first body paragraph when absent.)
 handling — load-test via `/plugins info` before relying on it.
 "Unconfirmed" means `muse skills validate` accepts the shipped keys
 (no unknown fields) but these three were not in the validated files.
-ZCode is off-table: its allowlist is exactly `name`, `description`,
-`when_to_use`, `license`, `metadata`, and every other key is
-ignored.
 
 ## Validation
 
@@ -353,7 +330,6 @@ muse plugins validate <symlink-free-tree>  # .muse-plugin manifest; fails closed
 skills-ref validate     # Agent Skills spec shape (name, 1024-char description, no XML)
 amp skill list          # Amp discovery check (no validator; list/info only)
 # Kimi: no manifest CLI — /plugins info <id> diagnostics + /plugins reload in TUI (`kimi doctor` is config-only)
-# ZCode: no CLI validator — Settings → Skills → Refresh, read diagnostics; $zcode-configuration-guide for symptoms
 # Codex: codex plugin marketplace list  # entry resolves after marketplace add
 # OpenCode/Cursor: no skill validator — OpenCode troubleshooting checklist (caps SKILL.md, name+description, unique names, permission.skill); Cursor surfaces via Customize → Skills
 ```

@@ -288,9 +288,8 @@ Invoke with `/<skill-name>` from the `/` menu:
 ```
 
 This package's `disable-model-invocation: true` matches Cursor's
-explicit-only default. Option+Enter pins a skill as a session Custom
-Mode. Skill selection from the `/` menu is a CLI feature, not
-editor-only; verify the actual executable and version with local help.
+explicit-only default. Skill selection from the `/` menu is a CLI
+feature; verify the actual executable and version with local help.
 
 ## Amp Code
 
