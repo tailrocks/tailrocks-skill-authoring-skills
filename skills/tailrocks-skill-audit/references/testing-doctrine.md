@@ -74,7 +74,7 @@ Run per skill on every description/trigger-field change:
    leading/trailing/consecutive hyphens, matches directory name, no
    reserved words (`anthropic`, `claude`). `description` non-empty,
    ≤1,024 chars, no XML tags.
-4. **Length caps.** Key trigger inside first ~250 chars (ZCode excerpt);
+4. **Length caps.** Key trigger inside first ~250 chars;
    `description` + `when_to_use` ≤1,536 (Claude Code listing); whole set
    survives Codex's 2%-of-context / 8k-char initial list (shorten
    descriptions first on overflow).
@@ -99,14 +99,12 @@ Run per skill on every description/trigger-field change:
    `agy plugin validate` (Antigravity). Kimi has no manifest CLI:
    read `/plugins info` diagnostics and `/plugins reload` in the TUI
    (`kimi doctor` checks config files only — never a manifest gate).
-   ZCode has no CLI validator: Settings → Skills → Refresh, read
-   diagnostics (`description exceeds 1024 chars`). Test on every
-   model family shipped to (see Models under test; record model ID +
-   client version in the evidence record).
+   Test on every model family shipped to (see Models under test;
+   record model ID + client version in the evidence record).
 8. **Flag coherence.** Side-effect workflows (merge/deploy/land) default
    to explicit-only (`disable-model-invocation: true` /
-   `allow_implicit_invocation: false`); OpenCode, Antigravity, and
-   ZCode ignore those flags, and Amp observes no gating field, so the
+   `allow_implicit_invocation: false`); OpenCode and Antigravity
+   ignore those flags, and Amp observes no gating field, so the
    description must carry the full boundary there.
 
 ## Models under test

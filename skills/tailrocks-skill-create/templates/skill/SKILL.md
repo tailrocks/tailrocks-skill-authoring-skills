@@ -11,14 +11,11 @@ description: >-
 # ("Not for <sibling trigger> — that belongs to <owning skill>").
 # Appended to description in the listing; counts toward the same
 # 1,536-char cap. Kimi: whenToUse. Grok: when-to-use + paths.
-# Cursor: paths + disable-model-invocation (icon/color are badge-only).
+# Cursor: paths + disable-model-invocation.
 # Amp: model-invoked; repo dir name must equal frontmatter name.
 # OpenCode v2 / Antigravity ignore unknown keys (manual-only flags dead
 # there — the guard sentence alone holds the boundary). Muse ids allow
 # underscore; validate with `muse skills validate <path>`.
-# ZCode honors only name, description, when_to_use, license, metadata;
-# compatibility/allowed-tools die there (when_to_use matching role
-# unverified — never the sole trigger carrier).
 # Portable keys only: name, description, license, compatibility,
 # metadata, allowed-tools. argument-hint, disable-model-invocation,
 # user-invocable, and when_to_use are host extensions — strip them

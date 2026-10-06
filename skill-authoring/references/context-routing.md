@@ -104,9 +104,8 @@ selection.
   weight for matching and become a shortcut the agent follows instead
   of the body. Also banned: XML tags (spec rejection), vague scope
   (`Helps with documents`), instructions.
-- **Caps.** `description` hard cap 1,024 chars (Agent Skills spec;
-  ZCode drops the whole skill over it). Keep key triggers inside the
-  first ~250 chars (ZCode injects only a 250-char excerpt; Claude
+- **Caps.** `description` hard cap 1,024 chars (Agent Skills spec).
+  Keep key triggers inside the first ~250 chars (Claude
   Code truncates `description` + `when_to_use` at 1,536 per entry;
   Codex lists name+description+path under min(2% context, 8,000
   chars): descriptions shorten first, skills may drop with a
@@ -114,23 +113,12 @@ selection.
   but the entry still occupies Codex's list budget — front-load
   trigger words regardless.
 - Manual-only trees add their guard sentence verbatim and budget the
-  rest (250 characters after the guard, here). The guard consumes
-  the head of ZCode's 250-char excerpt window, so on ZCode-targeted
-  trees the first trigger words after the guard must carry the match
-  alone.
+  rest (250 characters after the guard, here).
 - **Pushy beats polite.** Agents undertrigger: they skip skills that
   would help. Name trigger contexts explicitly, including cases where
   the user never says the domain word ("even if they don't mention
   'dashboard'"). Open with the imperative pattern `<capability>. Use
   when <trigger contexts>.`
-- **ZCode visible-but-never-fires order:** (1) names-only degradation
-  (too many enabled skills collapsed the shared excerpt budget —
-  disable unused ones), (2) vague description (spell out *when*), (3)
-  subagent custom `tools` allowlist missing the skill tool (hand-edit
-  the definition; Settings checkboxes lack it), (4) parent plugin
-  disabled. The `/` panel and the model see the same list — no
-  show-but-hide switch exists.
-
 ### The `when_to_use` trigger field
 
 `when_to_use` (Claude Code extension, snake_case — the only
@@ -156,11 +144,8 @@ its dedicated trigger field; its documented contract keys are only
 `name`, `description`, `type`, `whenToUse` (+aliases),
 `disableModelInvocation` (+aliases), `arguments` — other keys have
 no documented effect there. Grok accepts `when-to-use` /
-`when_to_use` plus `paths` globs. ZCode allowlists `when_to_use` as
-additional trigger-timing description — but its match text is
-documented as `name` + 250-char `description` excerpt only. Treat
-ZCode `when_to_use` as verify-before-rely: never the sole carrier
-of a trigger. Strip this key when packaging for claude.ai / Skills
+`when_to_use` plus `paths` globs. Strip this key when packaging
+for claude.ai / Skills
 API (spec allows only `name, description, license, compatibility,
 metadata, allowed-tools` — unexpected keys hard-error packaging).
 
@@ -174,14 +159,13 @@ live in `description` itself.
 | Claude Code | `description` + `when_to_use` (appended; 1,536 chars combined) | `paths` globs gate by file; `disable-model-invocation: true` removes from context; `user-invocable: false` hides `/` entry only |
 | Codex | `description` only (`name` aids) | `agents/openai.yaml → allow_implicit_invocation`; `default_prompt` / `short_description` are picker UI, never matching |
 | Muse | `name` + `description` | `disable-model-invocation`, `user-invocable` honored |
-| ZCode (GLM host) | `name` + 250-char `description` excerpt under a shared budget | `description` over 1,024 drops the whole skill; body over 100KB truncates |
 | Kimi | `description` + `whenToUse` (`when-to-use`, `when_to_use` aliases) | `disableModelInvocation`; `type: flow` is manual-only, never on an invokable skill; nesting cap 3; directory `SKILL.md` without `name`+`description` fails parsing; declare `arguments:` for every `$<name>` the body reads |
 | Gemini CLI / Antigravity | `name` + `description` only (agy 1.2.17: both required) | No other trigger keys exist on either host |
 | Grok Build | `description` + `when-to-use` + `paths` | `user-invocable` hides from the model too unless literally `true`; `allowed-tools` accepted, not enforced |
 | Qwen Code | `description` (what + when + user keywords) | Both invocation flags honored; `priority` sorts the `/skills` list only |
 | OpenCode | `name` + prose match via the `skill` tool | Ignores `disable-model-invocation` / `user-invocable`; gate is `permission.skill: ask` |
 | Amp | `name` + `description` listing; model decides loads; first-`name` wins across 11 roots | No user-invokable skills (model-invoked only); repo skills require dir name == frontmatter `name`; hosted repos cap 200 skills / 200 files / 10 MiB per file / 25 MiB; skill MCP via `mcp.json` or `mcpServers` (frontmatter wins) |
-| Cursor | `description` (+`name`); `paths` globs scope by file; nested monorepo skill dirs auto-scope | `disable-model-invocation: true` makes `/`-only (precedent: `/migrate-to-skills` output); `icon`/`color` style Custom-Mode badge only; `name` must match parent folder; skills ship only inside a plugin via a marketplace |
+| Cursor | `description` (+`name`); `paths` globs scope by file; nested monorepo skill dirs auto-scope | `disable-model-invocation: true` makes `/`-only (precedent: `/migrate-to-skills` output); `name` must match parent folder; skills ship only inside a plugin via a marketplace |
 
 ### YAML hygiene
 
