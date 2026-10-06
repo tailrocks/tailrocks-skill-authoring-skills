@@ -82,19 +82,48 @@ Run per skill on every description/trigger-field change:
    paraphrase fires; incomplete input asks instead of firing; negative
    case (sibling's trigger) does NOT fire; edge/unsupported action does
    NOT fire. Record hit/miss per case in the evidence record.
-6. **Gates.** `skills-ref validate` (spec), `muse skills validate`
-   per skill + `muse plugins validate` (Muse), `claude plugin
+6. **Trigger-rate measurement (nondeterminism).** Single hit/miss lies:
+   run each matrix case 3 times fresh-context and record the trigger
+   rate (fires/runs). A should-fire case passes at rate > 0.5; a
+   should-not-fire case passes at rate < 0.5. On any description change,
+   split cases into a train set (~60%) and a held-out validation set
+   (~40%, fixed across iterations, mixed polarity); tune wording against
+   train failures only and select the winning description by validation
+   pass rate, never by train. After selection, run 5 fresh queries never
+   used in tuning as the honesty check. Keep eval queries substantive:
+   agents skip skills for one-step tasks they can do unaided, so a
+   trivial query tests nothing no matter how perfect the description.
+7. **Gates.** `skills-ref validate` (spec), `muse skills validate
+   <path>` per skill + `muse plugins validate` (Muse), `claude plugin
    validate --strict` (Claude Code), `grok plugin validate` (Grok),
    `agy plugin validate` (Antigravity). Kimi has no manifest CLI:
    read `/plugins info` diagnostics and `/plugins reload` in the TUI
    (`kimi doctor` checks config files only — never a manifest gate).
-   Test on every model family shipped to (Haiku needs more guidance
-   than Sonnet/Opus).
-7. **Flag coherence.** Side-effect workflows (merge/deploy/land) default
+   ZCode has no CLI validator: Settings → Skills → Refresh, read
+   diagnostics (`description exceeds 1024 chars`). Test on every
+   model family shipped to (see Models under test; record model ID +
+   client version in the evidence record).
+8. **Flag coherence.** Side-effect workflows (merge/deploy/land) default
    to explicit-only (`disable-model-invocation: true` /
-   `allow_implicit_invocation: false`); OpenCode and Antigravity ignore
-   those flags, and Amp observes no gating field, so the description
-   must carry the full boundary there.
+   `allow_implicit_invocation: false`); OpenCode, Antigravity, and
+   ZCode ignore those flags, and Amp observes no gating field, so the
+   description must carry the full boundary there.
+
+## Models under test
+
+Name the exact models shipped to; effectiveness is model-relative, so
+"tested on Claude/Codex" is not evidence. Current IDs (Oct 2026):
+Claude `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-fable-5-1`
+(hardest/long-horizon tier), `claude-haiku-4-5`; OpenAI `gpt-6-astra`,
+`gpt-6.1-sol`, `gpt-6-luna`. Claude Code gates: Sonnet 5.5 needs
+≥2.1.284, Opus 5.5 needs ≥2.1.280. Other families: Grok default
+`grok-4.7`; Antigravity Gemini 3.8 Flash / 3.1 Pro; Muse `muse-spark`
+with efforts none–ultra; Amp modes low–ultra; Cursor auto/Codex/
+Claude/GPT/Grok/Gemini incl. parameterized brackets. Per-model test
+questions: Haiku — enough guidance? Sonnet — clear and efficient?
+Opus — nothing over-explained? At least three evaluations, each run
+on every shipped model family; record model ID + client version in
+the evidence record.
 
 ## Acceptance cases that earn their place
 
@@ -121,11 +150,24 @@ patching examples: a handful of observations stands in for thousands of future
 invocations, so a fix that only fits one prompt is overfitting, and stacking
 rigid MUSTs to pass one case is the documentation version of hard-coding the
 answer. Read transcripts, not only outcomes: if the skill makes the agent do
-unproductive work, cut the section causing it. When every test run independently
+unproductive work, cut the section causing it. Read them for navigation
+too — missed references, overreliance on one file, ignored files are
+routing defects, not reading failures. When every test run independently
 rebuilds the same helper, ship the helper with the skill instead of the
 instructions to rebuild it. The behavior the baseline documented should
 no longer occur and re-runs should converge — that is when to stop
 adding.
+
+## Comparing versions
+
+Compare versions blind: present both outputs to a judge that does not
+know which version produced which, and never use the tested model as
+its own judge. Blind comparison catches holistic quality gaps that
+pass/fail assertions miss — two outputs can both pass every assertion
+and still differ in organization, usability, and polish. Capture
+tokens and duration per run; report the delta (what the new version
+costs vs what it buys). A version that doubles token spend for a
+2-point gain is a regression wearing a green check.
 
 One skill at a time: written, proven, wired, before the next begins.
 Batching skills defers every test to a future that will not run them.

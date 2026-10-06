@@ -786,7 +786,7 @@ function forbiddenTargetPath(name: string): boolean {
   const root = parts[0]!;
   return (
     root === "contrib" ||
-    new Set([".agents", ".claude", ".codex", ".kimi", ".opencode"]).has(root) ||
+    new Set([".agents", ".claude", ".codex", ".kimi", ".kimi-code", ".opencode"]).has(root) ||
     /^(?:AGENTS|CLAUDE|GEMINI)\.md$/.test(parts.at(-1)!)
   );
 }

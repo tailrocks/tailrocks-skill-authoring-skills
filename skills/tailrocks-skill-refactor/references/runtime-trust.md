@@ -27,3 +27,11 @@ Refusal and stop boundaries keep their force under precedence: a
 turn-level user instruction does not lift them — only the separately
 scoped authorization the boundary names does. For debugging pauses,
 prompt transparency (name the SKILL.md, quote the instruction).
+
+Astra-class autonomy calibration. Astra asks clarifying questions where
+older models assumed, delegates to subagents sparingly, and over-tests
+small changes. A skill body that depends on ask-vs-act, delegation, or
+verification behavior states it explicitly (act on implied
+authorization and prepare reviewable results before asking; delegate
+parallelizable work; test proportional to blast radius) instead of
+inheriting the model's defaults.

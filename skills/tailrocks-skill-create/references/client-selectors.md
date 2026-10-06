@@ -7,15 +7,28 @@
 | Codex CLI | `$<skill>` bare, `/skills` picker | Only documented explicit forms. |
 | Claude Code | `/<skill>`, `/<plugin>:<skill>` | Leading `/name` runs directly; after prose it only permits that turn. |
 | Kimi | `/skill:<name>` | ONLY form; `/<name>` confirmed absent. |
-| Cursor | `/<skill>` in chat, `/` menu in CLI | Option+Enter pins a Custom Mode for the session. |
-| Muse | `/` picker + `/<skill>` | Bare slash verified; `/<plugin>:<skill>` unverified (picker-observed only). |
-| Grok Build | `/<skill>`, `/<plugin>:<skill>` | Plus `/user:` collision scope (confirmed via `grok inspect`); `/skills`, `grok inspect`. |
-| Amp | prose naming `<skill>` (model selects by name+description) | No slash form observed; `amp skill add <src>` installs, `amp skill info\|list` inspects. |
-| OpenCode | prose `Use the X skill…` via `skill` tool | No slash for skills; ignores `disable-model-invocation`/`user-invocable`; gate is `permission.skill: ask`. |
-| Gemini CLI / Antigravity | `/<skill>`, `/skills list` | Contract is `name`+`description` only. |
+| Cursor | `/<skill>` (one message) or Custom Mode via Option+Enter (whole session); `/` menu in CLI | `disable-model-invocation: true` = `/`-only; `paths` scopes by file; nested dirs auto-scope. |
+| Muse | `/` picker + `/<skill>` | Bare slash verified; `/<plugin>:<skill>` unverified (absent from official docs). Manage: `muse skills list\|inspect\|enable\|disable\|validate <path>\|install\|import\|update\|uninstall`. |
+| Grok Build | `/<skill>`, `/<plugin>:<skill>` | Plus `/local:`, `/user:` scope qualifiers (verified: collisions remap to `/user:`); `/skills`, `/marketplace`, `grok inspect`, `grok plugin …`. |
+| Amp | model-invoked from name+description listing (no slash) | Plugin-bundled skills address as `<plugin>:<skill>` (no competition with bare names). Manage: `amp skill add\|list\|remove\|info\|repositories`. |
+| OpenCode v2 | prose `Use the X skill…` via `skill` tool | No slash for skills; ignores `disable-model-invocation`/`user-invocable` and all unknown frontmatter; gate is `permission.skill: ask`; `tools.skill: false` hides the listing. |
+| Gemini CLI / Antigravity | `/<skill>` (CLI auto-converts), `/skills list`; plugin skills `/<plugin>:<skill>` | Contract is `name`+`description` only. Manage: `agy plugin list\|install\|uninstall\|enable\|disable\|validate`. |
 | Qwen Code | `/<skill>`, `/skills` panel | Extension skills namespaced `<ext>:<name>`. |
-| ZCode (GLM host) | `$skill-name` tag, `/` menu | Names+250-char excerpts injected per turn under a shared budget. |
+| ZCode (GLM host) | `$name` tag, `/` Skills group; subagents `@name` | No standalone skill marketplace — ship as plugin with flat `skills/<name>/SKILL.md` (nested grouping dirs are not picked up); manifest `.zcode-plugin/plugin.json` (falls back to `.claude-plugin/`); bump the `marketplace.json` entry `version` or no update is offered; test via a local-directory marketplace. |
 | ChatGPT | `@` mention of plugin/skill | — |
+
+## ZCode packaging notes
+
+User skills live in `~/.zcode/skills/<name>/SKILL.md`; import from
+Claude/Codex dirs via Global-vs-Project import, and sync to remotes
+with Sync Skill/Plugin. Subagents live in
+`~/.zcode/agents/<name>.md` (user-level only, Beta): they cannot
+spawn subagents, a custom `tools` list is exhaustive (hand-edit
+`mcp__<server>__<tool>` entries — Settings checkboxes lack
+skill/MCP tools, wildcards are ignored), keys are camelCase and
+case-sensitive (`thoughtLevel`, not `reasoningEffort`), and unknown
+keys are silently ignored. GLM model notes (5.3/Flash ids, thinking
+rules) live in `skill-authoring/references/glm-model-notes.md`.
 
 ## Wrong folklore — never author these
 
@@ -32,6 +45,7 @@
   `interface.default_prompt` ("optional surrounding prompt to use the
   skill with") — and it does NOT participate in implicit matching.
 - **`argument-hint` drives no client's triggering** — display hint only.
-- **Amp `plugin:skill` namespacing is unverified.** Amp dedupes by
-  frontmatter `name` with first-wins precedence; name the skill
-  plainly in prose and verify any qualifier before relying on it.
+- **Amp `plugin:skill` applies to plugin-bundled skills only.**
+  Bundled skills address as `<plugin>:<skill>` with no competition
+  against bare names; bare skills load by model decision from the
+  name+description listing, never via a qualifier.

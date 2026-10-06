@@ -1,0 +1,10 @@
+{
+  "version": "2",
+  "plugins": [
+    {
+      "id": "tailrocks-skill-authoring-skills",
+      "displayName": "Skill Authoring Skills",
+      "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills"
+    }
+  ]
+}

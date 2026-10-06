@@ -26,6 +26,18 @@ Consequences, each binding:
 - A router has at most 200 body lines. At the limit, an addition replaces or
   extracts existing material. Two sections gesturing at one obligation are
   weaker than one that states it.
+- References hang one level deep off the router. A reference that
+  points to another reference gets skimmed (`head -100`) instead of
+  read; flatten the chain and route each file directly from the router
+  with its when-to-read condition. Reference files over 100 lines open
+  with a table of contents so a partial read still reveals full scope.
+  All paths use forward slashes on every platform.
+- Auto-compaction re-attaches only the most recent invocation of each
+  skill, first 5,000 tokens each, 25,000 combined, most-recent-first —
+  older skills drop entirely. Keep standing instructions inside the first
+  5,000 tokens and never rely on a dropped skill's presence. Slash `/`
+  suggestions match description words by prefix: front-loaded trigger
+  words win twice.
 
 ## Match the form to the failure
 
@@ -53,6 +65,16 @@ workarounds, not just the act), state that violating the letter is
 violating the spirit, and keep a rationalization table built from real
 baseline runs — every excuse an agent actually used, with its counter.
 
+### Gotchas sections
+
+The highest-value content in most skills is a gotchas list:
+environment-specific facts that defeat reasonable assumptions ("the
+`users` table uses soft deletes — every query needs `WHERE deleted_at
+IS NULL`"). Concrete corrections, never general advice. Keep gotchas
+in the router where the agent reads them before the situation, and add
+every agent mistake you correct as a new gotcha — that is the cheapest
+skill improvement there is.
+
 ## Degrees of freedom
 
 Match specificity to fragility. High freedom (goals and heuristics) when
@@ -62,6 +84,33 @@ fine. Low freedom (exact commands, few or no parameters) when the
 operation is fragile and consistency is the point. Over-specifying a
 robust task wastes tokens and produces brittle compliance;
 under-specifying a fragile one produces confident breakage.
+
+## Overconstraint
+
+Modern models need less constraint, not more. System prompt, skill
+body, CLAUDE.md, and user request stack into conflicting orders
+("leave documentation as appropriate" vs "DO NOT add comments"), and
+the agent burns reasoning reconciling them instead of working. Audit
+for overlap on every edit: if two layers state one obligation, one of
+them deletes. Prefer judgment ("match the surrounding code's comment
+density") over rules ("never write multi-line comments") except where
+the iron law's baseline proves the rule binds a real failure. Design
+expressive interfaces (enums, parameters, schemas) over worked
+examples — examples pin the agent to one exploration space. When a new
+model generation ships, strip the previous generation's workarounds
+first (refusal steering, retry shims, "do not be lazy"), re-run the
+baseline, and only then tune.
+
+## Bundled scripts
+
+Design skill scripts as tiny CLIs: runnable from the command line,
+deterministic stdout, loud failures with usage, outputs to known file
+paths. State the intent per script — "run `x.py` to …" (execute;
+only output enters context) vs "see `x.py` for the algorithm" (read
+as reference). Scripts solve; they never defer: handle error
+conditions inside the script instead of failing for the agent to
+interpret, and justify every constant (no voodoo numbers). When a
+skill names MCP tools, use fully qualified `Server:tool` names.
 
 ## The output contract
 
@@ -107,7 +156,8 @@ outcomes.
 
 The authored authorities live under `skill-authoring/references/` as
 `operational-contract.md`, `responsibility-topology.md`,
-`context-routing.md`, `house-wiring.md`, and `client-selectors.md`.
+`context-routing.md`, `house-wiring.md`, `client-selectors.md`,
+`kimi-packaging.md`, and `glm-model-notes.md`.
 This audit-local reference is a
 compatibility bundle for the read-only judge; it does not own shared policy.
 Authoring routers load this compatibility bundle at the step that needs it and
@@ -196,6 +246,18 @@ selection.
   the head of ZCode's 250-char excerpt window, so on ZCode-targeted
   trees the first trigger words after the guard must carry the match
   alone.
+- **Pushy beats polite.** Agents undertrigger: they skip skills that
+  would help. Name trigger contexts explicitly, including cases where
+  the user never says the domain word ("even if they don't mention
+  'dashboard'"). Open with the imperative pattern `<capability>. Use
+  when <trigger contexts>.`
+- **ZCode visible-but-never-fires order:** (1) names-only degradation
+  (too many enabled skills collapsed the shared excerpt budget —
+  disable unused ones), (2) vague description (spell out *when*), (3)
+  subagent custom `tools` allowlist missing the skill tool (hand-edit
+  the definition; Settings checkboxes lack it), (4) parent plugin
+  disabled. The `/` panel and the model see the same list — no
+  show-but-hide switch exists.
 
 ### The `when_to_use` trigger field
 
@@ -218,11 +280,17 @@ when_to_use: >-
 Rules: example requests must read like typed prompts, not paraphrased
 capabilities. Sibling routing lives here when `description` is full.
 Kimi accepts `whenToUse` (aliases `when-to-use`, `when_to_use`) as
-its dedicated trigger field; Grok accepts `when-to-use` /
-`when_to_use` plus `paths` globs. Strip this key when packaging for
-claude.ai / Skills API (spec allows only `name, description,
-license, compatibility, metadata, allowed-tools` — unexpected keys
-hard-error packaging).
+its dedicated trigger field; its documented contract keys are only
+`name`, `description`, `type`, `whenToUse` (+aliases),
+`disableModelInvocation` (+aliases), `arguments` — other keys have
+no documented effect there. Grok accepts `when-to-use` /
+`when_to_use` plus `paths` globs. ZCode allowlists `when_to_use` as
+additional trigger-timing description — but its match text is
+documented as `name` + 250-char `description` excerpt only. Treat
+ZCode `when_to_use` as verify-before-rely: never the sole carrier
+of a trigger. Strip this key when packaging for claude.ai / Skills
+API (spec allows only `name, description, license, compatibility,
+metadata, allowed-tools` — unexpected keys hard-error packaging).
 
 ### Trigger fields by client
 
@@ -235,13 +303,13 @@ live in `description` itself.
 | Codex | `description` only (`name` aids) | `agents/openai.yaml → allow_implicit_invocation`; `default_prompt` / `short_description` are picker UI, never matching |
 | Muse | `name` + `description` | `disable-model-invocation`, `user-invocable` honored |
 | ZCode (GLM host) | `name` + 250-char `description` excerpt under a shared budget | `description` over 1,024 drops the whole skill; body over 100KB truncates |
-| Kimi | `description` + `whenToUse` (`when-to-use`, `when_to_use` aliases) | `disableModelInvocation`; never set `type: flow` on an invokable skill; nesting cap 3 |
+| Kimi | `description` + `whenToUse` (`when-to-use`, `when_to_use` aliases) | `disableModelInvocation`; `type: flow` is manual-only, never on an invokable skill; nesting cap 3; directory `SKILL.md` without `name`+`description` fails parsing; declare `arguments:` for every `$<name>` the body reads |
 | Gemini CLI / Antigravity | `name` + `description` only (agy 1.2.17: both required) | No other trigger keys exist on either host |
 | Grok Build | `description` + `when-to-use` + `paths` | `user-invocable` hides from the model too unless literally `true`; `allowed-tools` accepted, not enforced |
 | Qwen Code | `description` (what + when + user keywords) | Both invocation flags honored; `priority` sorts the `/skills` list only |
 | OpenCode | `name` + prose match via the `skill` tool | Ignores `disable-model-invocation` / `user-invocable`; gate is `permission.skill: ask` |
-| Amp | `name` + `description` (model-selected; first `name` wins across 11 levels) | No gating field observed; `amp skill info` inspects |
-| Cursor | `name` + `description` | `disable-model-invocation: true` is the default (explicit-only); omit for auto-invoke |
+| Amp | `name` + `description` listing; model decides loads; first-`name` wins across 11 roots | No user-invokable skills (model-invoked only); repo skills require dir name == frontmatter `name`; hosted repos cap 200 skills / 200 files / 10 MiB per file / 25 MiB; skill MCP via `mcp.json` or `mcpServers` (frontmatter wins) |
+| Cursor | `description` (+`name`); `paths` globs scope by file; nested monorepo skill dirs auto-scope | `disable-model-invocation: true` makes `/`-only (precedent: `/migrate-to-skills` output); `icon`/`color` style Custom-Mode badge only; `name` must match parent folder; skills ship only inside a plugin via a marketplace |
 
 ### YAML hygiene
 
@@ -256,9 +324,19 @@ Triggering dies silently on malformed metadata:
   no reserved words (`anthropic`, `claude`).
 - `description`: non-empty, at most 1,024 chars, no XML tags.
 - Gate every description change with `skills-ref validate` (spec),
-  `muse skills validate` (Muse), `claude plugin validate --strict`
+  `muse skills validate <path>` (Muse), `claude plugin validate --strict`
   (Claude Code), `grok plugin validate`, and `agy plugin validate`;
   test on each model family shipped to.
+- Host-only execution fields (never portable; strip for claude.ai/Skills
+  API with the other extensions): `model` (skill-level override,
+  `inherit` keeps session model; allowlisted/auto-mode exclusions fall
+  back silently), `context: fork` + `agent` (+`background`, default true:
+  forked skills run detached and never stack — their instructions must
+  stand alone with zero conversation history), skill `hooks` (persist for
+  the session; incompatible with manual-only policy — the scaffold
+  rejects them), `disallowed-tools` (removes tools while active; cannot
+  remove `EndConversation`), `arguments:` (named `$name` placeholders
+  mapping to argument positions; `\$1` escapes).
 
 ## Naming and examples
 
@@ -287,6 +365,9 @@ Run every draft against these before validation:
 - A substantial deliverable dumped into the conversation, or a file
   written for output with no reader beyond the current session — the
   output-contract section owns the choice.
+- Time-sensitive content (model versions, "current" limits) with no
+  dated note marking what rots, or terminology that shifts between
+  files — one term per concept across the tree.
 - Changelog prose or a reference to the skill's own previous version —
   "this replaces the earlier…", "formerly…", "we now…". A skill states
   current doctrine only; an agent loading it has no earlier version to

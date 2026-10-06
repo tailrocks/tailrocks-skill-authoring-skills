@@ -29,3 +29,16 @@ outcomes.
   named branch and pull request. Do not create a migration plan, migration
   artifact, or migration product skill. Create, update, and refactor never
   execute that migration under any selector or inherited authorization.
+
+## Skill vs tool vs system prompt
+
+Route by shape before authoring. **System prompt / instruction file:**
+global always-on behavior, safety boundaries, small stable policies —
+never multi-step procedures. **Tool (API/MCP):** live external data,
+side effects, fetching current state — narrow scope, typed inputs,
+explicit effects. **Skill:** a repeatable procedure where the how
+matters — branching workflows, scripts, templates, formatting rules —
+invoked sometimes, versioned independently. A one-off is an inline
+script; a daily-changing procedure is not yet a skill. Every skill
+states its workflow boundary: expected inputs, steps, outputs,
+facts the agent must not infer, and when to ask, stop, or decline.
