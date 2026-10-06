@@ -1,0 +1,12 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "tailrocks-skill-authoring-skills",
+  "version": "0.28.0",
+  "displayName": "Skill Authoring Skills",
+  "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
+  "suggestedPrompts": [
+    "Audit this skill.",
+    "Create a skill for this responsibility.",
+    "Refactor this skill without changing its contract."
+  ]
+}
