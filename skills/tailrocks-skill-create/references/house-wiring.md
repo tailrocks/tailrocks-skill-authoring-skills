@@ -43,10 +43,14 @@ trigger words regardless. `agents/openai.yaml` keys are snake_case:
 `interface.display_name`, `short_description`, `default_prompt`,
 `icon_small` / `icon_large`, `brand_color`;
 `dependencies.tools[]` declares MCP servers. Bodies stay
-source-neutral — no client-specific instructions; OpenCode and
-Antigravity ignore manual-only policy, so on those two clients the
-guard sentence alone holds the boundary, which is why it is
-load-bearing and never paraphrased.
+source-neutral — no client-specific instructions; OpenCode,
+Antigravity, and ZCode ignore manual-only policy
+(`disable-model-invocation`, `user-invocable`, `argument-hint`,
+`compatibility`, `allowed-tools`, `agents/openai.yaml` — ZCode's
+frontmatter allowlist is exactly `name`, `description`,
+`when_to_use`, `license`, `metadata`, and all other keys are
+ignored), so on those three clients the guard sentence alone holds
+the boundary, which is why it is load-bearing and never paraphrased.
 
 Frontmatter keys are not portable. `argument-hint`,
 `disable-model-invocation`, and `user-invocable` are Claude-Code-family
@@ -62,9 +66,15 @@ Kimi honors kebab-case `disable-model-invocation` but documents no
 and `type: flow` must never be set on an invokable skill; Qwen
 validates `name` against its own pattern; OpenCode ignores unknown
 frontmatter including the manual-only flags; Muse accepts the full
-Tailrocks set (`muse skills validate` reports no unknown fields);
-Cursor honors `disable-model-invocation` (explicit-only is its
-default); Amp observes `name` + `description` with no gating field.
+Tailrocks set (`muse skills validate <path>` reports no unknown
+fields); Cursor honors `paths` (legacy `globs` fallback),
+`disable-model-invocation`, `icon`, `color`, and `metadata`,
+requires `name` to match the parent folder, and auto-scopes
+monorepo-nested skill dirs by path; Amp reads `name` +
+`description` with no gating field, requires dir name == `name` in
+skill repos, caps hosted repos (200 skills, 200 files/skill, 10
+MiB/file, 25 MiB), and takes skill MCP from `mcp.json` or
+frontmatter `mcpServers`.
 Explicit selectors per client live in the shared
 `client-selectors.md` reference (copies in create and audit) — its
 bare-`$` Codex form is normative.
@@ -120,8 +130,9 @@ This tree's `metadata.description` + `"source": "./"` shape passes
 `claude plugin validate --strict`; entry `version`, when present,
 must equal the plugin's `plugin.json` version. Install `claude plugin
 install <name>@<marketplace> [--scope user|project|local]` after
-`marketplace add`; `update`, `remove`, `enable`/`disable`,
-`marketplace add|list|remove|update`. Scopes write `enabledPlugins`
+`marketplace add`; `update`, `remove` (`uninstall`, `rm` aliases),
+`enable`/`disable`, `marketplace add|list|remove|update`; `/plugin`
+panel and `/reload-plugins` in-session. Scopes write `enabledPlugins`
 to `~/.claude/settings.json` / `.claude/settings.json` /
 `.claude/settings.local.json`.
 
@@ -130,8 +141,16 @@ to `~/.claude/settings.json` / `.claude/settings.json` /
 Skill = directory + `SKILL.md` (`name` + `description` required).
 Load scopes: `$CWD/.agents/skills` up to
 `$REPO_ROOT/.agents/skills`, `$HOME/.agents/skills`,
-`/etc/codex/skills`; kill switch `[[skills.config]]
-path/enabled=false` in `~/.codex/config.toml`. Marketplace
+`/etc/codex/skills`; symlinked folders are followed and same-name
+skills are not merged. Scaffold and test at the narrowest scope
+that owns the workflow. Skill-level install `$skill-installer
+<name>`; disable via `[[skills.config]] enabled=false` in
+`~/.codex/config.toml`, then restart Codex. OpenAI distribution
+moved from the openai/skills repo (deprecated 2026-06-22) to
+plugins: the skill-only plugin path is the installable route while
+`.agents/skills` stays the local-authoring surface. Codex refreshes
+its skill catalog between turns — no restart needed after install.
+Marketplace
 `.agents/plugins/marketplace.json`: top-level `name`,
 `interface.displayName`, `plugins[]`; each entry carries `name`,
 `source` (`local` + `./`-prefixed path resolved from the marketplace
@@ -178,6 +197,14 @@ remove|reload`; `/reload` or `/new` after any change; installs copy
 to `$KIMI_CODE_HOME/plugins/managed/<id>/` (per-user only, source
 edits need reinstall). No manifest CLI: `kimi doctor` checks
 `config.toml`/`tui.toml` only — diagnostics live in `/plugins info`.
+Custom catalogs use marketplace JSON v2 (`{"version": "2",
+"plugins": [{"id", "source", …}]}` — this tree ships
+`.kimi-plugin/marketplace.json`; browse via `/plugins marketplace
+<path|url>` or `KIMI_CODE_PLUGIN_MARKETPLACE_URL`). Plugin agents
+live in `agents/*.md` (`description` required;
+`tools`/`disallowedTools`/`subagents` allowlists; `override: true`
+replaces built-ins). Full field tables:
+`skill-authoring/references/kimi-packaging.md`.
 
 ### Muse Code
 
@@ -223,8 +250,11 @@ a single skill directory: `amp skill add
 `~/.config/agents/skills/`) copies whole skill directories from a
 container but SKILL.md only from a lone skill dir, dropping
 `references/`. Inspect with `amp skill info|list`; remove with `amp
-skill remove`. No `validate` subcommand. Caps: 200 files/skill, 10
-MiB/file, 25 MiB/skill and repo. Amp plugins are TypeScript modules
+skill remove`. No `validate` subcommand. Caps: 200 skills/repo,
+200 files/skill, 10 MiB/file, 25 MiB/skill and repo. Skill MCP
+comes from a sibling `mcp.json` or frontmatter `mcpServers`
+(frontmatter wins); tools stay hidden until the skill loads. Amp
+plugins are TypeScript modules
 (`registerSkill`), not manifests — a directory plugin never
 auto-scans `skills/`.
 
@@ -261,6 +291,24 @@ first) or per-agent `tools.skill=false`. No install CLI, no
 validator — checklist only (caps `SKILL.md`, name+description,
 unique names, no deny).
 
+### ZCode
+
+No standalone skill marketplace: ship as a plugin with flat
+`skills/<name>/SKILL.md` (nested grouping dirs are not picked up).
+Manifest `.zcode-plugin/plugin.json`, falling back to
+`.claude-plugin/plugin.json`. Updates compare the `marketplace.json`
+entry `version` against the installed `plugin.json` version — bump
+the entry or no update is offered. Test through a local-directory
+marketplace. Frontmatter allowlist is exactly `name`, `description`,
+`when_to_use`, `license`, `metadata` — every other key is ignored,
+so manual-only flags die here. Every enabled skill injects `name` +
+a ≤250-char description excerpt per turn under one shared budget;
+overflow degrades to names only. No CLI validator: Settings →
+Skills → Refresh, read diagnostics (`description exceeds 1024
+chars`; missing `name`/`description` ignored with reason);
+`$zcode-configuration-guide` for config/symptom diagnosis. Model
+notes: `skill-authoring/references/glm-model-notes.md`.
+
 ### Frontmatter contract
 
 Behavior that must survive all targets lives in `description` +
@@ -284,6 +332,9 @@ directory and `description` to the first body paragraph when absent.)
 handling — load-test via `/plugins info` before relying on it.
 "Unconfirmed" means `muse skills validate` accepts the shipped keys
 (no unknown fields) but these three were not in the validated files.
+ZCode is off-table: its allowlist is exactly `name`, `description`,
+`when_to_use`, `license`, `metadata`, and every other key is
+ignored.
 
 ## Validation
 
@@ -291,14 +342,20 @@ handling — load-test via `/plugins info` before relying on it.
 mise run docs           # regenerate derived pages
 mise run lint           # skill + manifest validator (description budget, catalog, lockstep)
 mise run docs:check     # generated files not stale
-claude plugin validate --strict ./  # Claude manifest + marketplace
+claude plugin validate <dir> --strict  # exits 0 pass / 1 fail / 2 tool error; --json for CI (needs CC ≥2.1.259)
+# A directory auto-selects marketplace.json, else plugin.json, else skills/agents/commands components.
+# A marketplace run does not open plugin files and a plugin run does not check a root SKILL.md — validate ./skills too.
+# /doctor prompt-audit (in-session, needs CC ≥2.1.283): flags CLAUDE.md/skills/agents prompts written for older models. Run after any model-family migration before re-baselining.
 grok plugin validate    # Grok manifest loads (native or .claude-plugin/)
 agy plugin validate     # agy skill inventory + manifest shape
 muse skills validate <skill-dir>     # per skill, extras accepted
 muse plugins validate <symlink-free-tree>  # .muse-plugin manifest; fails closed on the pre-existing .github/CLAUDE.md symlink, so validate a copy without it
 skills-ref validate     # Agent Skills spec shape (name, 1024-char description, no XML)
+amp skill list          # Amp discovery check (no validator; list/info only)
 # Kimi: no manifest CLI — /plugins info <id> diagnostics + /plugins reload in TUI (`kimi doctor` is config-only)
+# ZCode: no CLI validator — Settings → Skills → Refresh, read diagnostics; $zcode-configuration-guide for symptoms
 # Codex: codex plugin marketplace list  # entry resolves after marketplace add
+# OpenCode/Cursor: no skill validator — OpenCode troubleshooting checklist (caps SKILL.md, name+description, unique names, permission.skill); Cursor surfaces via Customize → Skills
 ```
 
 Description and trigger-field changes also run the checklist in

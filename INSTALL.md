@@ -177,6 +177,10 @@ remove. Plugins are per-user only; project scope is unsupported.
 Removal deletes the installation record but leaves the managed copy on
 disk.
 
+A custom catalog ships as `.kimi-plugin/marketplace.json`
+(marketplace JSON v2): browse it with `/plugins marketplace
+<path|url>` or set `KIMI_CODE_PLUGIN_MARKETPLACE_URL`.
+
 The fallback is discovered skill directories: `.kimi-code/skills` and
 `.agents/skills` in the project, `$KIMI_CODE_HOME/skills` (normally
 `~/.kimi-code/skills`) and `~/.agents/skills` for the user, plus
