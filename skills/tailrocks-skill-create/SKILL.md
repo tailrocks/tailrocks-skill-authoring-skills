@@ -56,6 +56,11 @@ responsibility with its current owner. A replacement, rename,
 split, merge, retirement, transfer, alias, or compatibility route
 is migration, not creation. Refuse it unchanged.
 
+Read `references/house-wiring.md` and resolve the target wiring
+policy. Inspect instruction files, sibling skills, validators,
+manifests, and catalogs read-only. Refuse the request unchanged
+when the policy is missing or conflicting.
+
 Before placement accepts a genuinely new, unowned responsibility,
 create no file. A refusal leaves the repository byte-for-byte
 unchanged.
@@ -84,11 +89,9 @@ structural cue: a named bullet, a heading, or a labeled sentence.
 
 ### 4. Wire the repository
 
-Read `references/house-wiring.md`. Detect the target policy from
-its instruction files, sibling skills, validators, manifests, and
-catalogs. Update every artifact that the policy names: the skill
-index rows, the package guides, and the manifest versions. When the
-policy is missing or conflicts, stop without mutation.
+Apply the wiring policy resolved in step 1. Update every
+artifact that the policy names: the skill index rows, the package
+guides, and the manifest versions.
 
 ### 5. Validate
 

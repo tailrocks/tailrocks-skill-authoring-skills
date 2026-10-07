@@ -235,8 +235,8 @@ Triggering dies silently on malformed metadata:
   name, no reserved words (`anthropic`, `claude`).
 - `description`: non-empty, at most 1024 chars, no XML tags.
 - Gate every description change with five validators. Run the spec
-  check, `muse skills validate <path>`, `claude plugin validate
-  --strict`, `grok plugin validate`, and `agy plugin validate`.
+  check, `muse skills validate <path>`, `claude plugin validate`,
+  `grok plugin validate`, and `agy plugin validate`.
 - Host-only execution fields never port. `model` overrides the
   session model. `context: fork` plus `agent` runs detached and
   never stacks: such instructions must stand alone with zero

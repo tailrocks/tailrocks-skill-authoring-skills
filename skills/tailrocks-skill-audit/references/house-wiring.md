@@ -200,7 +200,8 @@ but these three were not in the validated files.
 alint check
 # plus the strict-JSON check and the frontmatter/ID check
 npx --yes markdownlint-cli2@0.23.3 "**/*.md"
-claude plugin validate <dir> --strict
+claude plugin validate <dir>
+# Reserve --strict for warning-free manifests only
 grok plugin validate
 agy plugin validate
 muse skills validate <skill-dir>
@@ -215,7 +216,7 @@ Each command covers one layer. `alint check` covers structure,
 manifests, README, and skill IDs. The strict-JSON check parses
 manifests and rejects duplicate keys. The frontmatter and ID check
 matches names to directories and validates IDs. The markdownlint
-check examines prose shape. `claude plugin validate --strict`
+check examines prose shape. `claude plugin validate`
 exits 0 on pass, 1 on fail, and 2 on tool error. `grok plugin
 validate` loads the manifest through `.claude-plugin/`. `agy plugin
 validate` checks skill inventory plus manifest shape. `muse skills
