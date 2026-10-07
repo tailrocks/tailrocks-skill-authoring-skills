@@ -20,8 +20,9 @@ $tailrocks-skill-audit tailrocks-review-pr
 
 The first form fits Claude Code. The second form fits Codex. The
 third form fits Kimi Code. The fourth form fits Muse, Antigravity,
-Grok, and OpenCode pickers. Amp has no slash invoke. Ask the thread
-for the exact qualified skill by name.
+and Grok pickers. OpenCode has no slash form. Request the skill in
+prose. Amp has no slash invoke. Ask the thread for the exact
+qualified skill by name.
 
 ## Skill owners
 

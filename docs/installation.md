@@ -148,27 +148,26 @@ the docs. Identity is `name@marketplace`: always qualify the id.
   guide, 2026-10-07. The `amp` CLI is absent locally, so these
   commands are doc-derived and unverified here.
 - Tools and access: the `amp` CLI and a local checkout of the
-  package. Each skill installs as its own directory.
-- Method: per-skill add from local paths.
+  package. The container holds each skill in its own directory.
+- Method: container add from a local path.
 - Scope: project `.agents/skills/`, machine-local
   `~/.config/agents/skills/`, or personal and workspace hosted
   scopes.
 
-Shell commands. Clone once. Then add each of the four skill
-directories:
+Shell commands. Clone once. Then add the `skills/`
+container:
 
 ```sh
 git clone https://github.com/tailrocks/tailrocks-skill-authoring-skills
-for skill in tailrocks-skill-audit tailrocks-skill-create \
-    tailrocks-skill-update tailrocks-skill-refactor; do
-  amp skill add ./tailrocks-skill-authoring-skills/skills/"$skill" \
-    --name "$skill"
-done
+amp skill add ./tailrocks-skill-authoring-skills/skills
 ```
 
-Each add copies the full skill directory, including references. Add
-`--global` for the machine-local scope. Add `--overwrite` to replace
-an older copy.
+The add copies whole skill directories from the container,
+including references. Never add a lone skill directory. A lone
+directory copies `SKILL.md` only and drops references. This
+behavior is reported for the documented version only. Add
+`--global` for the machine-local scope. Add `--overwrite` to
+replace an older copy.
 
 Inspect the install (shell):
 
@@ -320,7 +319,7 @@ the path-derived case-sensitive id with `@` mention or
 
 ```text
 Use the tailrocks-skill-audit skill on tailrocks-review-pr.
-Report only; change nothing.
+Report only. Change nothing.
 ```
 
 Update and reload: replace the copied files with the new package
@@ -524,10 +523,10 @@ URL:
 /plugins install https://github.com/tailrocks/tailrocks-skill-authoring-skills/commit/95348b233ae53b4ea1f805b5e03843cbebcdbacd
 ```
 
-The commit pin is the recommended form. The pin above is the current
-central-catalog revision of this package (version 0.28.0). Apply
-every install, enable, disable, or remove with `/reload` or a new
-session.
+The commit pin is the recommended form. The pin above is the
+pre-rewrite 0.28.0 baseline. It stays until the rewrite releases.
+Then re-pin to the release commit. Apply every install, enable,
+disable, or remove with `/reload` or a new session.
 
 Inspect the install (session):
 
@@ -628,10 +627,12 @@ Kimi (session):
 /plugins install https://github.com/tailrocks/tailrocks-skill-authoring-skills/commit/95348b233ae53b4ea1f805b5e03843cbebcdbacd
 ```
 
-Then run `/reload`. When needed, delete the stale managed copy.
+The pin is the pre-rewrite baseline. Re-pin after the rewrite
+releases. Then run `/reload`. When needed, delete the stale
+managed copy.
 
-Amp: delete the old installed skill directories. Add the four new
-skill directories. Run the `reload_skills` tool. OpenCode and
+Amp: delete the old installed skill directories. Add the new
+`skills/` container. Run the `reload_skills` tool. OpenCode and
 Antigravity native routes: delete the old copied directories. Copy
 the new ones. Antigravity plugin route: run `agy plugin
 uninstall tailrocks-skill-authoring-skills`. Then install the new

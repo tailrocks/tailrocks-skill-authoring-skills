@@ -158,7 +158,8 @@ live in `description` itself.
   `default_prompt` and `short_description` are picker UI, never
   matching.
 - **Muse.** Match text: `name` plus `description`.
-  `disable-model-invocation` and `user-invocable` honored.
+  `disable-model-invocation` and `user-invocable` are accepted
+  but not enforced.
 - **Kimi.** Match text: `description` plus `whenToUse` (plus
   aliases). `disableModelInvocation` gates entry. `type: flow` is
   manual-only, never on an invokable skill. Nesting cap is 3. A
@@ -169,9 +170,12 @@ live in `description` itself.
 - **Grok Build.** Match text: `description` plus `when-to-use`
   plus `paths`. `user-invocable` hides from the model too unless
   literally `true`. `allowed-tools` accepted, not enforced.
-- **OpenCode.** Match text: `name` plus prose match through the
-  `skill` tool. Ignores `disable-model-invocation` and
+- **OpenCode V1.** Match text: `name` plus prose match through
+  the `skill` tool. Ignores `disable-model-invocation` and
   `user-invocable`. Gate is `permission.skill: ask`.
+- **OpenCode V2.** Selection uses the path-derived id with `@`
+  mention or `skill({id})`. It keeps `disable-model-invocation`
+  among its keys.
 - **Amp.** Match text: `name` plus `description` listing. Model
   decides loads. First-`name` wins across roots. No
   user-invokable skills (model-invoked only). Repo skills require

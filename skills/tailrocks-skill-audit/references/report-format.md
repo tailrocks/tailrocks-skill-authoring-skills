@@ -56,8 +56,8 @@ file and line or quoted-phrase evidence:
 - Each body states user-instruction precedence with its refusal
   carve-out (see `runtime-trust.md`).
 - Flag coherence: `disable-model-invocation` and
-  `allow_implicit_invocation` agree. OpenCode and Antigravity
-  exposure is explicit, and Amp observes no gating field.
+  `allow_implicit_invocation` agree. OpenCode, Antigravity, and
+  Muse exposure is explicit, and Amp observes no gating field.
 - `agents/openai.yaml` uses bare `$<skill>`. `$plugin:skill`
   anywhere is a WIRE finding. `default_prompt` is picker framing,
   never a trigger. Keys are snake_case.

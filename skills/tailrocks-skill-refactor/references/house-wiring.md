@@ -34,9 +34,9 @@ regardless. `agents/openai.yaml` keys are snake_case:
 `icon_small` and `icon_large`, `brand_color`.
 
 Bodies stay source-neutral, with no client-specific instructions.
-OpenCode and Antigravity ignore manual-only policy. On those two
-clients the guard sentence alone holds the boundary. That is why
-it is load-bearing and never paraphrased.
+OpenCode V1 and Antigravity ignore manual-only policy. On those
+two clients the guard sentence alone holds the boundary. That is
+why it is load-bearing and never paraphrased.
 
 House prose rules inside the skill follow. Use mermaid for any
 drawn flow. A one-line arrow sequence in prose is fine. An ASCII
@@ -137,7 +137,8 @@ first wins across precedence levels. Install the `skills/`
 container, never a single skill directory. `amp skill add
 <owner/repo[/path]|git-URL|local-path>` copies whole skill
 directories from a container. It copies SKILL.md only from a lone
-skill dir and drops `references/`. `--global` targets the
+skill dir and drops `references/`. This behavior is reported for
+the documented version only. `--global` targets the
 machine-local scope. Inspect with `amp skill list`. No `validate`
 subcommand exists. Caps: 200 skills per repo, 200 files per skill,
 10 MiB per file, 25 MiB per skill and repo.
@@ -146,12 +147,14 @@ subcommand exists. Caps: 200 skills per repo, 200 files per skill,
 
 No manifest. Skill paths: `.opencode/skills/`,
 `~/.config/opencode/skills/`, plus `.claude/skills/` and
-`.agents/skills/` compatibility paths. Frontmatter allowlist is
-`name`, `description`, `license`, `compatibility`, `metadata` only:
-everything else is silently ignored, so manual-only flags vanish
-here. `name` uses 1 to 64 lowercase hyphenated characters and
-equals the directory. `description` uses 1 to 1024 characters. Gate
-with `permission.skill` (`ask` for manual-only skills) or per-agent
+`.agents/skills/` compatibility paths. On V1, the frontmatter
+allowlist is `name`, `description`, `license`, `compatibility`,
+`metadata` only: everything else is silently ignored, so
+manual-only flags vanish there. V2 keeps
+`disable-model-invocation` among its keys. `name` uses 1 to 64
+lowercase hyphenated characters and equals the directory.
+`description` uses 1 to 1024 characters. On V1, gate with
+`permission.skill` (`ask` for manual-only skills) or per-agent
 `tools.skill=false`. No install CLI and no validator exist.
 
 ### Frontmatter contract
@@ -165,12 +168,13 @@ body, never in extra frontmatter.
 - **`argument-hint`:** display on Claude and Grok, accepted on
   Muse, `arguments:` instead on Kimi, ignored on OpenCode, absent
   elsewhere.
-- **`disable-model-invocation`:** honored on Claude, Grok, Kimi
-  (kebab), and Muse. Codex uses the yaml flag. None observed on
-  Antigravity and Amp. Ignored on OpenCode.
-- **`user-invocable`:** honored on Claude and Muse. Literal `true`
-  only on Grok. Unknown on Kimi. Ignored on OpenCode. Absent
-  elsewhere.
+- **`disable-model-invocation`:** honored on Claude, Grok, and
+  Kimi (kebab). Accepted on Muse, which cannot enforce
+  per-skill manual-only entry. Codex uses the yaml flag. None
+  observed on Antigravity and Amp. Ignored on OpenCode V1.
+- **`user-invocable`:** honored on Claude. Accepted on Muse
+  without enforcement. Literal `true` only on Grok. Unknown on
+  Kimi. Ignored on OpenCode V1. Absent elsewhere.
 - **`when_to_use` plus aliases:** appended trigger on Claude,
   `when-to-use` trigger on Grok, `whenToUse` trigger on Kimi,
   ignored on Codex and OpenCode, absent elsewhere.
