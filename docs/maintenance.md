@@ -115,12 +115,11 @@ Generation diff. It proves `.github/` matches the generator output:
 
 ```sh
 velnor-actions generate --output-dir /private/tmp/velnor-preview
-diff -r .github /private/tmp/velnor-preview
+diff -r --brief .github /private/tmp/velnor-preview/.github
 ```
 
-Expected result: empty diff. After each regenerate, restore
-`.github/PULL_REQUEST_TEMPLATE.md`. Do this until the generator
-preserves it. See the CI source section below.
+Expected result: empty diff. The generator preserves
+`.github/PULL_REQUEST_TEMPLATE.md`. See the CI source section below.
 
 ## Policy version and update
 
@@ -141,17 +140,13 @@ in `.alint.yml`. Regenerate. Then re-run every verify command.
 `.github/` from it. Never hand-edit `.github/` as the fix for a
 workflow problem. Change the config. Regenerate.
 
-Known gap: the generator replaces the full `.github/` tree and drops
-hand-placed files. The required `.github/PULL_REQUEST_TEMPLATE.md`
-stays hand-placed. After each regenerate, confirm the file still
-exists. When the generator removed it, restore it from version
-control. After the generator preserve change lands and the template
-survives a regenerate, remove this paragraph.
+The 0.1.0 generator (velnor-new commit `47c7b5b2e`) preserves the
+hand-placed `.github/PULL_REQUEST_TEMPLATE.md`. A regenerate keeps
+the file unchanged. Do not restore the file after a regenerate.
 
 The generated CI also compares `.github/` against a fresh generate.
-The hand-placed template fails that comparison until the generator
-preserve change lands. Keep the template: the shared alint profile
-requires it.
+The observed comparison is empty. Keep the template: the shared
+alint profile requires it.
 
 ## Release and migration
 

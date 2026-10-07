@@ -11,3 +11,6 @@ default_branch = "main"              # Push branch; required because CI checkout
 
 [discovery]
 exclude = ["skills/**/assets/**"]
+
+[workflow.verify]
+jobs = ["alint"]
