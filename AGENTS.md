@@ -20,9 +20,8 @@ as one unit. Do not copy one `SKILL.md` file out of its skill directory.
 - Write all new and changed prose in ASD-STE100 Simplified Technical
   English, Issue 9 rules.
 - Never hand-edit `.github/`. Change `.velnor/config.toml`.
-  Regenerate. After each regenerate, restore
-  `.github/PULL_REQUEST_TEMPLATE.md`. Do this until the generator
-  preserves it.
+  Regenerate. The generator preserves
+  `.github/PULL_REQUEST_TEMPLATE.md`. See `docs/maintenance.md`.
 - Never add evaluation content: no benchmarks, no model trials, no
   scored comparisons, no pass-rate targets. See `docs/maintenance.md`.
 - Keep one fact in one place. Link to `docs/` guides. Do not copy
