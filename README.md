@@ -9,13 +9,14 @@ and need an explicit human command.
 
 | Skill | Task |
 | --- | --- |
-| `tailrocks-skill-audit` | Audit one skill or the portfolio. Read-only. |
-| `tailrocks-skill-create` | Make a new skill for a new responsibility. |
-| `tailrocks-skill-update` | Fix a skill in place. Contract unchanged. |
-| `tailrocks-skill-refactor` | Split, merge, rename. Behavior preserved. |
+| [`tailrocks-skill-audit`](skills/tailrocks-skill-audit/SKILL.md) | Audit one skill or the portfolio. Read-only. |
+| [`tailrocks-skill-create`](skills/tailrocks-skill-create/SKILL.md) | Make a new skill for a new responsibility. |
+| [`tailrocks-skill-update`](skills/tailrocks-skill-update/SKILL.md) | Fix a skill in place. Contract unchanged. |
+| [`tailrocks-skill-refactor`](skills/tailrocks-skill-refactor/SKILL.md) | Split, merge, rename. Behavior preserved. |
 
 Each skill body lives in its own directory. Read
-`skills/tailrocks-skill-audit/SKILL.md` for one complete example.
+[`skills/tailrocks-skill-audit/SKILL.md`](skills/tailrocks-skill-audit/SKILL.md)
+for one complete example.
 
 ## Install
 
@@ -28,7 +29,7 @@ the client accepts it. Each row links its full section in
 | --- | --- |
 | Claude Code | [Marketplace install](docs/installation.md#claude-code) |
 | Codex | [Marketplace add](docs/installation.md#codex) |
-| Amp | [Per-skill add](docs/installation.md#amp) |
+| Amp | [Container add](docs/installation.md#amp) |
 | Muse Code | [Marketplace install](docs/installation.md#muse-code) |
 | OpenCode | [Skill-directory copy](docs/installation.md#opencode) |
 | Antigravity | [Local-path install](docs/installation.md#antigravity) |

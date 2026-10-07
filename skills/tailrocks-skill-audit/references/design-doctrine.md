@@ -29,10 +29,11 @@ Consequences, each binding:
 - A router has at most 200 body lines. At the limit, an addition
   replaces or extracts existing material. Two sections that gesture
   at one obligation are weaker than one that states it.
-- References hang one level deep off the router. A reference that
-  points to another reference gets skimmed instead of read. Flatten
-  the chain. Route each file directly from the router with its
-  when-to-read condition. Reference files over 100 lines open with
+- References hang one level deep off the router. A reference
+  never chains through another reference. Flatten the chain. Route
+  each file directly from the router with its when-to-read
+  condition. A single direct pointer is permitted where restating
+  would duplicate. Reference files over 100 lines open with
   a table of contents, so a partial read still reveals full scope.
   All paths use forward slashes on every platform.
 - Slash `/` suggestions match description words by prefix.
@@ -198,7 +199,8 @@ live in `description` itself.
   `default_prompt` and `short_description` are picker UI, never
   matching.
 - **Muse.** Match text: `name` plus `description`.
-  `disable-model-invocation` and `user-invocable` honored.
+  `disable-model-invocation` and `user-invocable` are accepted
+  but not enforced.
 - **Kimi.** Match text: `description` plus `whenToUse` (plus
   aliases). `disableModelInvocation` gates entry. `type: flow` is
   manual-only, never on an invokable skill. Nesting cap is 3. A
@@ -209,9 +211,12 @@ live in `description` itself.
 - **Grok Build.** Match text: `description` plus `when-to-use`
   plus `paths`. `user-invocable` hides from the model too unless
   literally `true`. `allowed-tools` accepted, not enforced.
-- **OpenCode.** Match text: `name` plus prose match through the
-  `skill` tool. Ignores `disable-model-invocation` and
+- **OpenCode V1.** Match text: `name` plus prose match through
+  the `skill` tool. Ignores `disable-model-invocation` and
   `user-invocable`. Gate is `permission.skill: ask`.
+- **OpenCode V2.** Selection uses the path-derived id with `@`
+  mention or `skill({id})`. It keeps `disable-model-invocation`
+  among its keys.
 - **Amp.** Match text: `name` plus `description` listing. Model
   decides loads. First-`name` wins across roots. No
   user-invokable skills (model-invoked only). Repo skills require
