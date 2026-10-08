@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "tailrocks-skill-authoring-skills",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
   "author": {
     "name": "tailrocks",
