@@ -1,11 +1,11 @@
 # House wiring
 
-What a finished skill touches beyond its own directory. Target repository policy
-governs. Detect it from instruction files, existing skill siblings, validators,
-manifests, catalogs, and generation commands. Persist discovered mechanical
-policy in `.skill-authoring.json`; if evidence conflicts or required policy is
-missing, stop without mutation. Never project this repository's metadata onto a
-different tree.
+What a finished skill touches beyond its own directory. Target
+repository policy governs. Detect it from instruction files,
+existing skill siblings, validators, manifests, catalogs, and
+generation commands. When evidence conflicts or required policy is
+missing, stop without mutation. Never project this repository
+metadata onto a different tree.
 
 ## The skill directory
 
@@ -14,351 +14,236 @@ skills/<name>/
 ├── SKILL.md            # router: frontmatter + body
 ├── agents/openai.yaml  # per-client invocation policy
 ├── references/         # depth, free until read
-└── templates/          # copy-ready assets the skill ships (optional)
+└── assets/             # copy-ready templates the skill ships (optional)
 ```
 
-Tailrocks profile uses: `name`, `license: Apache-2.0`, a description
-starting exactly with the guard sentence ("Use only when the user
-explicitly requests this skill.") with **250 characters of budget after
-it**, `disable-model-invocation: true`, `user-invocable: true`, and an
-`argument-hint` when the skill takes modes or targets. `MODEL_POLICY`
-skills add a `when_to_use` trigger field (Claude appends it to
-`description` under the same 1,536-char cap; Kimi accepts `whenToUse` /
-`when-to-use` / `when_to_use` as its dedicated trigger field, with
-auto-invoke from `description` + `whenToUse` and a 3-level nesting cap;
-Grok accepts `when-to-use` / `when_to_use` plus `paths` globs that hide
-the skill until a match is touched). `allowed-tools` and `metadata`
-are breadth keys with per-client effects, not portable semantics:
-Grok parses `allowed-tools` but never enforces it and shows `metadata`
-in UI only; Kimi documents neither key, so their effect there is
-unknown until a `/plugins info` load test says otherwise.
+This tree uses manual-only policy. It carries `name`,
+`license: Apache-2.0`, `disable-model-invocation: true`, and
+`user-invocable: true`. The description starts exactly with the
+guard sentence ("Use only when the user explicitly requests this
+skill."). 250 characters of budget remain after it. It carries an
+`argument-hint` when the skill takes modes or targets.
 `agents/openai.yaml` carries
 `policy.allow_implicit_invocation: false` plus the interface block,
-whose `default_prompt` uses the bare `$<skill>` form — never
-`$plugin:skill`, which is not a documented Codex invocation — and
-drives the Codex picker UI only, never implicit matching; `false`
-stops implicit match but the entry still occupies Codex's
-min(2%-of-context, 8,000-char) initial-list budget, so front-load
-trigger words regardless. `agents/openai.yaml` keys are snake_case:
+whose `default_prompt` uses the bare `$<skill>` form, never
+`$plugin:skill`, which is not a documented Codex invocation. The
+`false` value stops implicit match, but the entry still occupies
+the Codex initial-list budget, so front-load trigger words
+regardless. `agents/openai.yaml` keys are snake_case:
 `interface.display_name`, `short_description`, `default_prompt`,
-`icon_small` / `icon_large`, `brand_color`;
-`dependencies.tools[]` declares MCP servers. Bodies stay
-source-neutral — no client-specific instructions; OpenCode and
-Antigravity ignore manual-only policy (`disable-model-invocation`,
-`user-invocable`, `argument-hint`, `compatibility`,
-`allowed-tools`, `agents/openai.yaml`), so on those two clients
-the guard sentence alone holds the boundary, which is why it is
-load-bearing and never paraphrased.
+`icon_small` and `icon_large`, `brand_color`.
 
-Frontmatter keys are not portable. `argument-hint`,
-`disable-model-invocation`, and `user-invocable` are Claude-Code-family
-extensions: packaging for claude.ai or the Skills API hard-errors on
-them (only `name`, `description`, `license`, `compatibility`,
-`metadata`, `allowed-tools` survive), so strip them when that is the
-target. Per-client support: Grok honors `argument-hint` plus both
-invocation flags but ignores `license`, `model`, `effort`, and
-`compatibility`, and only the literal `user-invocable: true` counts;
-Kimi honors kebab-case `disable-model-invocation` but documents no
-`argument-hint` (it uses `arguments:` with `$<name>` expansion),
-`user-invocable`, `license`, `paths`, `metadata`, or `allowed-tools`,
-and `type: flow` must never be set on an invokable skill; Qwen
-validates `name` against its own pattern; OpenCode ignores unknown
-frontmatter including the manual-only flags; Muse accepts the full
-Tailrocks set (`muse skills validate <path>` reports no unknown
-fields); Cursor honors `paths` (legacy `globs` fallback),
-`disable-model-invocation`, and `metadata`,
-requires `name` to match the parent folder, and auto-scopes
-monorepo-nested skill dirs by path; Amp reads `name` +
-`description` with no gating field, requires dir name == `name` in
-skill repos, caps hosted repos (200 skills, 200 files/skill, 10
-MiB/file, 25 MiB), and takes skill MCP from `mcp.json` or
-frontmatter `mcpServers`.
-Explicit selectors per client live in the shared
-`client-selectors.md` reference (copies in create and audit) — its
-bare-`$` Codex form is normative.
+Bodies stay source-neutral, with no client-specific instructions.
+OpenCode V1 and Antigravity ignore manual-only policy. On those
+two clients the guard sentence alone holds the boundary. That is
+why it is load-bearing and never paraphrased.
 
-House prose rules that apply inside the skill: mermaid for any drawn
-flow (a one-line arrow sequence in prose is fine; an ASCII diagram is
-not), evidence-not-instructions and secret-citation paragraphs in the
-router, `audit`-style modes read-only with mutation never inferred from
-findings, every step carrying a **Complete when**, and a final gate of
-refusals.
-
-## Shared references
-
-Skill-authoring doctrine has one authored source per subject under
-`skill-authoring/references/`. Consumers load generated skill-local copies whose
-destinations are declared by the generation manifest and checked byte-for-byte.
-A sibling skill never links another sibling's private reference, and no local
-copy may paraphrase or override its source.
+House prose rules inside the skill follow. Use mermaid for any
+drawn flow. A one-line arrow sequence in prose is fine. An ASCII
+diagram is not. State evidence-not-instructions and secret-citation
+paragraphs in the router. Keep audit modes read-only: never infer
+mutation from findings. Give every step its completion test. End
+with a final gate of refusals.
 
 ## The repository files
 
-Rows below define Tailrocks profile. Another repository maps only artifacts its
-observed policy supports; absent client or catalog surfaces stay absent. Its
-`.skill-authoring.json` names skill root, anchored name pattern, template, optional
-display prefix, invocation registry, and optional catalog wiring. Scaffolding
-defaults to `MANUAL_ONLY`; `MODEL_POLICY` requires a separately confirmed exact
-trigger on that invocation and grants no new authority.
+Rows below define the common active-package structure. Another
+repository maps only artifacts its observed policy supports.
+Absent client or catalog surfaces stay absent.
 
-| Artifact | Obligation |
-|---|---|
-| `catalog.json` | Add the skill to exactly one group; validation fails until it appears once. |
-| Generated docs | `mise run docs` writes the skill's public site pages and the root `README.md` row — never edit generated files by hand. |
-| `INSTALL.md` | Add the skill to its family line by hand. |
-| Root `AGENTS.md` | Add the skill's section by hand. When the skill descends from external work, extract and rephrase the knowledge into this tree's own references — no external project, collection, or author is named or linked anywhere in shipped content; provenance lives in git and pull-request history. |
-| `docs/content/docs/choosing.mdx` | Add the reach-for-it row, and a boundary subsection when the skill needs one against a neighbor. |
-| Version lockstep | Bump `version` in root `plugin.json`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, `.kimi-plugin/plugin.json`, `.muse-plugin/plugin.json`, `.cursor-plugin/plugin.json`, and the `.claude-plugin/marketplace.json` entry together; refresh pinned-tag examples. `.agents/plugins/marketplace.json` and `.cursor-plugin/marketplace.json` carry no version. A bump ships nothing until the tag and release exist. |
+- **`README.md`:** add the skill row to the Skills table by
+  hand.
+- **`docs/` guides:** add the skill to the index, usage owners,
+  and compatibility record by hand.
+- **Install guide:** add per-client install notes only when the
+  skill needs them.
+- **Version lockstep:** bump `version` in root `plugin.json`,
+  `.claude-plugin/plugin.json`, and `.kimi-plugin/plugin.json`
+  together. Root `plugin.json` is the source of truth. A bump ships
+  nothing until the tag and release exist.
 
 ## Client packaging
 
-Manifests, install verbs, and validators per client, verified against
-the versions shown (2026-10-06: claude 2.1.289, codex-cli 0.160.0,
-grok 1.0.46, kimi 2.1.1, agy 1.2.17, amp 0.0.1791216048, cursor-agent
-2026.09.18, muse 1.4.2, opencode v2.0.20). Revalidate commands against
-the installed build before relying on them.
+Manifests, install verbs, and validators per client. Revalidate
+commands against the installed build before relying on them.
 
 ### Claude Code
 
-Manifest `.claude-plugin/plugin.json` (`name` is the only required
-key). Marketplace `.claude-plugin/marketplace.json` requires
-top-level `name`, `owner`, `plugins[]`; each entry requires `name` +
-`source`, a `./`-prefixed path resolved from the marketplace root.
-This tree's `metadata.description` + `"source": "./"` shape passes
-`claude plugin validate --strict`; entry `version`, when present,
-must equal the plugin's `plugin.json` version. Install `claude plugin
-install <name>@<marketplace> [--scope user|project|local]` after
-`marketplace add`; `update`, `remove` (`uninstall`, `rm` aliases),
-`enable`/`disable`, `marketplace add|list|remove|update`; `/plugin`
-panel and `/reload-plugins` in-session. Scopes write `enabledPlugins`
-to `~/.claude/settings.json` / `.claude/settings.json` /
-`.claude/settings.local.json`.
+Manifest `.claude-plugin/plugin.json` carries name, version, and
+description. Install `claude plugin install
+<name>@<marketplace> [--scope user|project|local]` after
+`marketplace add`. Manage with `update`, `remove` (`uninstall`,
+`rm` aliases), `enable` and `disable`, `marketplace
+add|list|remove|update`, the `/plugin` panel, and `/reload-plugins`
+in-session. Validate with `claude plugin validate`.
 
 ### Codex CLI
 
-Skill = directory + `SKILL.md` (`name` + `description` required).
-Load scopes: `$CWD/.agents/skills` up to
-`$REPO_ROOT/.agents/skills`, `$HOME/.agents/skills`,
-`/etc/codex/skills`; symlinked folders are followed and same-name
-skills are not merged. Scaffold and test at the narrowest scope
-that owns the workflow. Skill-level install `$skill-installer
-<name>`; disable via `[[skills.config]] enabled=false` in
-`~/.codex/config.toml`, then restart Codex. OpenAI distribution
-moved from the openai/skills repo (deprecated 2026-06-22) to
-plugins: the skill-only plugin path is the installable route while
-`.agents/skills` stays the local-authoring surface. Codex refreshes
-its skill catalog between turns — no restart needed after install.
-Marketplace
-`.agents/plugins/marketplace.json`: top-level `name`,
-`interface.displayName`, `plugins[]`; each entry carries `name`,
-`source` (`local` + `./`-prefixed path resolved from the marketplace
-root, or `url` / `git-subdir` / `npm`), and always
-`policy.installation`
-(`AVAILABLE`|`INSTALLED_BY_DEFAULT`|`NOT_AVAILABLE`),
-`policy.authentication`, and `category`. Unresolvable entries are
-skipped, not fatal. `codex plugin marketplace add
-<owner/repo|url|path>` then `codex plugin add
-<plugin>@<marketplace>`; `marketplace list|upgrade|remove`,
-`remove`. Per-repo enable: `[plugins."<plugin>@<marketplace>"]
-enabled=true` in `.codex/config.toml`. This tree ships the
-`.codex-plugin/plugin.json` compatibility fallback and deliberately
-no root Agent Plugins manifest: adding `extensions.com.openai` later
-replaces the overlay entirely (no merge), so never split OpenAI
-settings across both.
+Skill equals directory plus `SKILL.md` (`name` plus `description`
+required). Install `codex plugin add <plugin>@<marketplace>` after
+`codex plugin marketplace add <owner/repo|url|path>`. Manage with
+`marketplace list|upgrade|remove` and `remove`. Per-repo enable
+lives in `.codex/config.toml`. No `install`, `update`, or
+`validate` verbs exist: marketplace refresh stays separate from
+installed-plugin refresh.
 
 ### Grok Build
 
 No native manifest: Grok reads `.claude-plugin/` marketplaces,
-plugins, skills, hooks, and MCPs as-is, and `grok plugin validate`
-passes on this tree through that path. Skill paths
-`./.grok/skills/` (up to repo root), `~/.grok/skills/`, plugin
-`skills/`, plus Claude-compat and `~/.agents/` dirs. `grok plugin
-install <git|user/repo|path>[@ref][#subdir]`, `update`, `uninstall`,
-`enable|disable`, `validate`, `tag [--push]` (version to release
-tag), `marketplace add|remove|update`. Discovery check `grok inspect`
-(collisions rename to `/user:`).
+plugins, and skills as-is. Install `grok plugin install
+<git|user/repo|path>[@ref][#subdir]` with explicit trust, after
+`marketplace add`. Manage with `update`, `uninstall`,
+`enable|disable`, `validate`, and `marketplace
+add|remove|update`. Discovery check is `grok inspect`.
 
 ### Kimi Code
 
-Manifest `kimi.plugin.json` (wins) or `.kimi-plugin/plugin.json`;
-required: `name` only (`[a-z0-9][a-z0-9_-]{0,63}`). `interface`
-allows only `displayName`, `shortDescription`, `longDescription`,
-`developerName`, `websiteURL` — never `capabilities` or
-`defaultPrompt` (Codex-only; Kimi ignores them). `skills` takes `./`
-paths (omitted = root `SKILL.md` is the single root); `agents`
-omitted means `agents/` auto-discovers, so never ship a stray `.md`
-under `agents/`. Budgets: `systemPrompt`/`systemPromptPath` 32 KB
-each, 64 KB total. TUI-only management: `/plugins install
-<path|zip|github-url>` (repo, `/tree/<ref>`,
-`/releases/tag/<tag>`, `/commit/<sha>`), `list|info|enable|disable|
-remove|reload`; `/reload` or `/new` after any change; installs copy
-to `$KIMI_CODE_HOME/plugins/managed/<id>/` (per-user only, source
-edits need reinstall). No manifest CLI: `kimi doctor` checks
-`config.toml`/`tui.toml` only — diagnostics live in `/plugins info`.
-Custom catalogs use marketplace JSON v2 (`{"version": "2",
-"plugins": [{"id", "source", …}]}` — this tree ships
-`.kimi-plugin/marketplace.json`; browse via `/plugins marketplace
-<path|url>` or `KIMI_CODE_PLUGIN_MARKETPLACE_URL`). Plugin agents
-live in `agents/*.md` (`description` required;
-`tools`/`disallowedTools`/`subagents` allowlists; `override: true`
-replaces built-ins). Full field tables:
-`skill-authoring/references/kimi-packaging.md`.
+Manifest `.kimi-plugin/plugin.json` requires `name` only. It sets
+`skills` to `./skills/`: without it, Kimi reads a root SKILL.md
+file instead. `interface` allows only `displayName`,
+`shortDescription`, `developerName`, `websiteURL`. TUI-only
+management: `/plugins install <path|zip|github-url>`,
+`list|info|enable|disable|remove|reload`. Run `/reload` or `/new`
+after any change. Installs copy to
+`$KIMI_CODE_HOME/plugins/managed/<id>/` (per-user only, source
+edits need reinstall). No manifest CLI exists: diagnostics live in
+`/plugins info`. Custom catalogs use marketplace JSON v2, reached
+through `/plugins marketplace <path|url>`.
 
 ### Muse Code
 
-Project skill `<repo>/.agents/skills/<id>/SKILL.md`; personal
-installs stage in the workspace and hand the user `muse skills
-install <dir>` (never write `$CONFIG_DIR/skills`,
-`~/.claude/skills`, `~/.codex/skills`, or `$HOME/.agents/skills`
-directly). Native plugin manifest `.muse-plugin/plugin.json`
-(`schemaVersion: 1`, `name`, `displayName`, `version`,
-`description`, `compat:{source:"native",
-manifestDir:".muse-plugin"}`,
-`capabilities:{skills,commands,hooks,mcpServers,reminders}`); IDs
-`^[a-z0-9][a-z0-9._-]{0,79}$`, reserved `loop`, `muse-core`; never
-emit `tools|agents|outputStyles|settings|apps`. Lifecycle: `muse
-skills validate <dir>` then `muse plugins validate <dir>` (clean =
-`valid:true`, zero diagnostics), then `muse plugins install <path>`
-/ `muse skills install <dir>`; manage with
-`list|inspect|enable|disable|update|uninstall|remove`, `import
---from claude|codex`. Hooks live in `.muse/hooks.json`, no CLI to
-manage.
+This layout removes the native plugin manifest
+`.muse-plugin/plugin.json`. Muse reads the Claude manifest through
+its
+foreign-adapter import, or the portable root manifest. Lifecycle:
+`muse skills validate <dir>`, then `muse plugins validate <dir>`,
+then `muse plugins install <path>` or `muse skills install <dir>`.
+Manage with
+`list|inspect|enable|disable|update|uninstall|remove`.
 
-### Antigravity (`agy`)
+### Antigravity CLI
 
-Root `plugin.json` is this tree's agy manifest: closed field set
-`name`, `description`, `logo` (relative path only),
-`suggestedPrompts` (at most 3, exactly 3 recommended), `displayName`,
-`version` (semver), `disabled`. Never emit `author`, `homepage`,
-`keywords`, or `repository` — the loader silently discards them.
-Identity is the install directory name, never manifest `name`; `agy
-plugin validate <path>` before install, `install
-<local-dir|git-url|plugin@marketplace>`, `list|enable|disable|
-uninstall`. A new plugin directory needs a restart (`agy install`
-is shell-PATH setup, not plugin install). Skill frontmatter: `name`
-+ `description` (WHAT+WHEN, third person), both required.
+Root `plugin.json` carries the portable Agent Plugins 1.0.0 schema.
+Never give it an Antigravity schema: the native schema differs.
+Install `agy plugin install <local-dir>` (local path only, no
+Git-URL form). Manage with `list|enable|disable|uninstall`. A new
+plugin directory needs a restart. Skill frontmatter is `name` plus
+`description`, both required. Validate with `agy plugin validate`.
 
 ### Amp
 
-No manifest. Skills are directories; dedupe by frontmatter `name`,
-first wins across 11 precedence levels (`~/.config/agents/skills/`
-first, workspace repo last). Install the `skills/` container, never
-a single skill directory: `amp skill add
-<owner/repo[/path]|git-URL|local-path>` (`--global` targets
-`~/.config/agents/skills/`) copies whole skill directories from a
-container but SKILL.md only from a lone skill dir, dropping
-`references/`. Inspect with `amp skill info|list`; remove with `amp
-skill remove`. No `validate` subcommand. Caps: 200 skills/repo,
-200 files/skill, 10 MiB/file, 25 MiB/skill and repo. Skill MCP
-comes from a sibling `mcp.json` or frontmatter `mcpServers`
-(frontmatter wins); tools stay hidden until the skill loads. Amp
-plugins are TypeScript modules
-(`registerSkill`), not manifests — a directory plugin never
-auto-scans `skills/`.
-
-### Cursor
-
-Single-plugin layout: root `.cursor-plugin/plugin.json` (only `name`
-required, `^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$`; recommended
-`displayName description version author publisher homepage repository
-license logo keywords category tags`) + root `skills/`, indexed by
-repo-root `.cursor-plugin/marketplace.json` (required `name`,
-`plugins[]`; entries `{name, source, description?}` — no `version`,
-no `category`). Both files follow the official Cursor schemas
-(author/owner take `name` + `email` only, never `url`).
-`cursor-agent plugin marketplace add <gitUrl> | list | remove |
-update <nameOrUrl>`; no local-path install, no validator (`update`
-re-indexes). Skill dirs: `.cursor/skills/<name>/` or
-`~/.cursor/skills/<name>/` — never `~/.cursor/skills-cursor/`
-(system-owned).
+No manifest. Skills are directories, deduped by frontmatter `name`,
+first wins across precedence levels. Install the `skills/`
+container, never a single skill directory. `amp skill add
+<owner/repo[/path]|git-URL|local-path>` copies whole skill
+directories from a container. It copies SKILL.md only from a lone
+skill dir and drops `references/`. This behavior is reported for
+the documented version only. `--global` targets the
+machine-local scope. Inspect with `amp skill list`. No `validate`
+subcommand exists. Caps: 200 skills per repo, 200 files per skill,
+10 MiB per file, 25 MiB per skill and repo.
 
 ### OpenCode
 
 No manifest. Skill paths: `.opencode/skills/`,
-`~/.config/opencode/skills/`, `.claude/skills/`,
-`~/.claude/skills/`, `.agents/skills/`, `~/.agents/skills/`
-(project paths walk to the worktree). Frontmatter allowlist is
-`name`, `description`, `license`, `compatibility`, `metadata` ONLY
-— everything else is silently ignored, so manual-only flags and
-`argument-hint` vanish here. `name`:
-`^[a-z0-9]+(-[a-z0-9]+)*$`, 1–64 chars, equals the directory;
-`description` 1–1,024 chars. Gate with `opencode.json`
-`{"permission":{"skill":{"<pattern>":"allow|ask|deny"}}}` (deny
-hides the skill; patterns evaluate `findLast`, so order catch-all
-first) or per-agent `tools.skill=false`. No install CLI, no
-validator — checklist only (caps `SKILL.md`, name+description,
-unique names, no deny).
+`~/.config/opencode/skills/`, plus `.claude/skills/` and
+`.agents/skills/` compatibility paths. On V1, the frontmatter
+allowlist is `name`, `description`, `license`, `compatibility`,
+`metadata` only: everything else is silently ignored, so
+manual-only flags vanish there. V2 keeps
+`disable-model-invocation` among its keys. `name` uses 1 to 64
+lowercase hyphenated characters and equals the directory.
+`description` uses 1 to 1024 characters. On V1, gate with
+`permission.skill` (`ask` for manual-only skills) or per-agent
+`tools.skill=false`. No install CLI and no validator exist.
 
 ### Frontmatter contract
 
-Behavior that must survive all targets lives in `description` +
-body, never in extra frontmatter. (Grok defaults `name` to the
-directory and `description` to the first body paragraph when absent.)
+Behavior that must survive all targets lives in `description` plus
+body, never in extra frontmatter.
 
-| Field | Claude | Codex | Grok | Kimi | Muse | agy | Amp | Cursor | OpenCode |
-|---|---|---|---|---|---|---|---|---|---|
-| `name`, `description` | required | required | required | required | required | required | required | required | required |
-| `license` | honored | — | ignored | unknown | accepted | — | — | — | honored |
-| `argument-hint` | display | — | display | unknown (`arguments:` instead) | accepted | — | — | — | ignored |
-| `disable-model-invocation` | honored | n/a (yaml flag) | honored | honored (kebab) | accepted | none observed | none observed | honored (default) | ignored |
-| `user-invocable` | honored | — | literal `true` only | unknown | accepted | — | — | — | ignored |
-| `when_to_use` (+aliases) | appended trigger | ignored | `when-to-use` trigger | `whenToUse` trigger | — | — | — | — | ignored |
-| `paths` | file gate | — | hide-until-touched | — | — | — | — | — | ignored |
-| `allowed-tools` | honored | — | parsed, inert | unknown | unconfirmed | — | — | — | ignored |
-| `metadata` | honored | — | UI-only | unknown | unconfirmed | — | — | — | honored (string map) |
-| `compatibility` | honored | — | ignored | unknown | unconfirmed | — | — | — | honored |
+- **`name`, `description`:** required on all eight clients.
+- **`license`:** honored on Claude and OpenCode, ignored on Grok,
+  accepted on Muse, unknown on Kimi, absent elsewhere.
+- **`argument-hint`:** display on Claude and Grok, accepted on
+  Muse, `arguments:` instead on Kimi, ignored on OpenCode, absent
+  elsewhere.
+- **`disable-model-invocation`:** honored on Claude, Grok, and
+  Kimi (kebab). Accepted on Muse, which cannot enforce
+  per-skill manual-only entry. Codex uses the yaml flag. None
+  observed on Antigravity and Amp. Ignored on OpenCode V1.
+- **`user-invocable`:** honored on Claude. Accepted on Muse
+  without enforcement. Literal `true` only on Grok. Unknown on
+  Kimi. Ignored on OpenCode V1. Absent elsewhere.
+- **`when_to_use` plus aliases:** appended trigger on Claude,
+  `when-to-use` trigger on Grok, `whenToUse` trigger on Kimi,
+  ignored on Codex and OpenCode, absent elsewhere.
+- **`paths`:** file gate on Claude, hide-until-touched on Grok,
+  ignored on OpenCode, absent elsewhere.
+- **`allowed-tools`:** honored on Claude, parsed but inert on
+  Grok, unknown on Kimi, unconfirmed on Muse, ignored on OpenCode,
+  absent elsewhere.
+- **`metadata`:** honored on Claude, UI-only on Grok, unknown on
+  Kimi, unconfirmed on Muse, string map on OpenCode, absent
+  elsewhere.
+- **`compatibility`:** honored on Claude and OpenCode, ignored on
+  Grok, unknown on Kimi, unconfirmed on Muse, absent elsewhere.
 
 "Unknown" means Kimi documents neither the key nor its unknown-key
-handling — load-test via `/plugins info` before relying on it.
-"Unconfirmed" means `muse skills validate` accepts the shipped keys
-(no unknown fields) but these three were not in the validated files.
+handling. Load-test through `/plugins info` before relying on it.
+"Unconfirmed" means `muse skills validate` accepts the shipped keys,
+but these three were not in the validated files.
 
 ## Validation
 
 ```sh
-mise run docs           # regenerate derived pages
-mise run lint           # skill + manifest validator (description budget, catalog, lockstep)
-mise run docs:check     # generated files not stale
-claude plugin validate <dir> --strict  # exits 0 pass / 1 fail / 2 tool error; --json for CI (needs CC ≥2.1.259)
-# A directory auto-selects marketplace.json, else plugin.json, else skills/agents/commands components.
-# A marketplace run does not open plugin files and a plugin run does not check a root SKILL.md — validate ./skills too.
-# /doctor prompt-audit (in-session, needs CC ≥2.1.283): flags CLAUDE.md/skills/agents prompts written for older models. Run after any model-family migration before re-baselining.
-grok plugin validate    # Grok manifest loads (native or .claude-plugin/)
-agy plugin validate     # agy skill inventory + manifest shape
-muse skills validate <skill-dir>     # per skill, extras accepted
-muse plugins validate <symlink-free-tree>  # .muse-plugin manifest; fails closed on the pre-existing .github/CLAUDE.md symlink, so validate a copy without it
-skills-ref validate     # Agent Skills spec shape (name, 1024-char description, no XML)
-amp skill list          # Amp discovery check (no validator; list/info only)
-# Kimi: no manifest CLI — /plugins info <id> diagnostics + /plugins reload in TUI (`kimi doctor` is config-only)
-# Codex: codex plugin marketplace list  # entry resolves after marketplace add
-# OpenCode/Cursor: no skill validator — OpenCode troubleshooting checklist (caps SKILL.md, name+description, unique names, permission.skill); Cursor surfaces via Customize → Skills
+alint check
+# plus the strict-JSON check and the frontmatter/ID check
+npx --yes markdownlint-cli2@0.23.3 "**/*.md"
+claude plugin validate <dir>
+# Reserve --strict for warning-free manifests only
+grok plugin validate
+agy plugin validate
+muse skills validate <skill-dir>
+muse plugins validate <dir>
+# Kimi has no manifest CLI: use /plugins info plus /plugins reload
+# Codex: codex plugin marketplace list shows the entry
+# OpenCode has no skill validator: caps and checklist only
+# Amp has no skill validator: amp skills list shows discovery only
 ```
 
-Description and trigger-field changes also run the checklist in
-`skills/tailrocks-skill-audit/references/testing-doctrine.md`.
+Each command covers one layer. `alint check` covers structure,
+manifests, README, and skill IDs. The strict-JSON check parses
+manifests and rejects duplicate keys. The frontmatter and ID check
+matches names to directories and validates IDs. The markdownlint
+check examines prose shape. `claude plugin validate`
+exits 0 on pass, 1 on fail, and 2 on tool error. `grok plugin
+validate` loads the manifest through `.claude-plugin/`. `agy plugin
+validate` checks skill inventory plus manifest shape. `muse skills
+validate` checks one skill and accepts extras. `muse plugins
+validate` checks the portable or Claude manifest path.
 
-Run each once. Validator repair permits at most two matched, in-scope passes.
-Stop immediately for an unmatched error, unavailable tool, or exhausted bound;
-preserve current state, report exact failure and prior mutations, and never
-claim completion.
-
-Per-skill eval trees are forbidden. Behavioral claims use durable evidence
-records and deterministic acceptance checks.
+Run each gate once. Repair only a matched, in-scope error. Stop
+immediately for an unmatched error, an unavailable tool, or a
+failed repair. Preserve the current state, report the exact failure
+and prior mutations, and never claim completion.
 
 ## Update-mode obligations
 
 Editing an existing skill adds constraints beyond the create path:
 
-- **Check the cited evidence record before rewording** a gate, rejection rule,
-  or "complete when" clause — load-bearing lines are not edited casually.
-- **Strengthen over append.** Prefer making an existing section state
-  the new obligation to adding a sibling section that gestures at it.
-- **A router has at most 200 body lines.** At the limit, the next addition
-  replaces or extracts existing material.
-- **Rerun every affected deterministic acceptance check** after a router
-  change — a new section changes every behavior in the file, so the check
+- **Check the cited evidence record before rewording** a gate,
+  rejection rule, or completion clause. Load-bearing lines never
+  change casually.
+- **Strengthen over append.** Prefer making an existing section
+  state the new obligation to adding a sibling section that gestures
+  at it.
+- **A router has at most 200 body lines.** At the limit, the next
+  addition replaces or extracts existing material.
+- **Rerun every affected static check** after a router change. A
+  new section changes every behavior in the file, so the check
   nearest the edit is not the only one at risk.
-- A check that misses one element while everything else is correct usually
-  exposes a signposting defect — look at where the
-  requirement sits in the file before rewriting what it says.
-- Generated public docs are refreshed by `mise run docs`, never edited.
+- A check that misses one element while everything else is correct
+  usually exposes a signposting defect. Before rewriting what it
+  says, inspect where the requirement sits in the file.
+- Refresh generated docs through their generator, never by hand.
