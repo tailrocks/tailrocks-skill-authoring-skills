@@ -42,6 +42,12 @@ Applied the common active-package structure on branch
 - Replaced `INSTALL.md` with the six standard guides under `docs/`.
 - Added `AGENTS.md` and `.github/PULL_REQUEST_TEMPLATE.md`.
 
+## 0.28.1 - 2026-10-08
+
+- Regenerated CI with Velnor Actions 0.1.4.
+- Replaced the `.github/CLAUDE.md` symlink with a regular pointer
+  file. Installers that reject symlinks now accept the package.
+
 ## 0.28.0 - 2026-10-06
 
 Four-skill package at commit `95348b233ae53b4ea1f805b5e03843cbebcdbacd`
