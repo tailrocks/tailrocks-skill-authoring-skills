@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.28.1 - 2026-10-08
 
 Applied the common active-package structure on branch
 `standardize/package-rewrite`. Rewrote all four skills:
@@ -41,9 +41,6 @@ Applied the common active-package structure on branch
 - Restructured `README.md` into the eight required sections.
 - Replaced `INSTALL.md` with the six standard guides under `docs/`.
 - Added `AGENTS.md` and `.github/PULL_REQUEST_TEMPLATE.md`.
-
-## 0.28.1 - 2026-10-08
-
 - Regenerated CI with Velnor Actions 0.1.4.
 - Replaced the `.github/CLAUDE.md` symlink with a regular pointer
   file. Installers that reject symlinks now accept the package.
