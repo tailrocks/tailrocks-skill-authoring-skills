@@ -13,4 +13,4 @@ default_branch = "main"              # Push branch; required because CI checkout
 exclude = ["skills/**/assets/**"]
 
 [workflow.verify]
-jobs = ["alint"]
+jobs = ["alint", "strict-json", "frontmatter-id", "link-check"]
