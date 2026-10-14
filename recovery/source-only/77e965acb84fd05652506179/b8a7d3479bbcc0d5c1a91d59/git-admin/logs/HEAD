@@ -1,0 +1,11 @@
+0000000000000000000000000000000000000000 a5b25695bd35fc5265894529ab7c85d87162ae42 Alexey Zhokhov <alexey@zhokhov.com> 1791836601 +0700	clone: from https://github.com/tailrocks/tailrocks-skill-authoring-skills.git
+a5b25695bd35fc5265894529ab7c85d87162ae42 1cdf81ee7c640f92f841a27c6856e77c40aecafd Alexey Zhokhov <alexey@zhokhov.com> 1791836602 +0700	checkout: moving from main to codex/chatgpt-marketplace-validators
+1cdf81ee7c640f92f841a27c6856e77c40aecafd 1b78bbb4ec24dbdebdde54533d09c504c7444bd7 Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	rebase (start): checkout a5b25695bd35fc5265894529ab7c85d87162ae42
+1b78bbb4ec24dbdebdde54533d09c504c7444bd7 5e5fc230577bfa5c9df1587c80508465f7768550 Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	commit (amend): ci: validate skill marketplace packaging
+5e5fc230577bfa5c9df1587c80508465f7768550 398702ffa221372c02bc6e85ee372d55e436833f Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	rebase (pick): ci: check local documentation links
+398702ffa221372c02bc6e85ee372d55e436833f d18efbc1c0d5de5dc36c1555fd0615aefafd9c00 Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	commit (amend): ci: check local documentation links
+d18efbc1c0d5de5dc36c1555fd0615aefafd9c00 17097b0674fab81938c089c21f22780e325a1e3d Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	rebase (pick): ci: correct local link validation
+17097b0674fab81938c089c21f22780e325a1e3d 5a52a67444fe414fb5ce6f3910ce4d9cc8c1369f Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	commit (amend): ci: correct local link validation
+5a52a67444fe414fb5ce6f3910ce4d9cc8c1369f 5a52a67444fe414fb5ce6f3910ce4d9cc8c1369f Alexey Zhokhov <alexey@zhokhov.com> 1791836611 +0700	rebase (finish): returning to refs/heads/codex/chatgpt-marketplace-validators
+5a52a67444fe414fb5ce6f3910ce4d9cc8c1369f 942083be897d62b1254017e3861e3e8df18343b2 Alexey Zhokhov <alexey@zhokhov.com> 1791900285 +0700	commit: ci: regenerate with Velnor 0.1.7
+942083be897d62b1254017e3861e3e8df18343b2 73541f80364250fd90f4e15628ee20673e097a5a Alexey Zhokhov <alexey@zhokhov.com> 1791906101 +0700	commit: ci: regenerate with Velnor 0.1.8
