@@ -1,0 +1,15 @@
+{
+  "group_id": "77e965acb84fd05652506179",
+  "schema": "github-repatriation.mapped-empty-directory-layout.v1",
+  "sources": [
+    {
+      "directories": [
+        {
+          "mode": 448,
+          "relative_path": ".github.velnor-stage/spare"
+        }
+      ],
+      "source_id": "ed4b6340ce833e979cc2f2b1"
+    }
+  ]
+}
