@@ -1,0 +1,34 @@
+[
+  {
+    "name": "tailrocks-skill-audit",
+    "description": " Use only when the user explicitly requests this skill. Inspect one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Never edits audited skills or wiring; writes only skill-audits/ reports.",
+    "argumentHint": "<skill name>|all",
+    "overview": "skills/tailrocks-skill-audit/index.md",
+    "definition": "skills/tailrocks-skill-audit/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-audit/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-create",
+    "description": " Use only when the user explicitly requests this skill. Create a new agent skill for an evidenced responsibility with no owner, using the target repository's policy. Do not use for existing skills or mechanical gates.",
+    "argumentHint": "<capability or observed failure>",
+    "overview": "skills/tailrocks-skill-create/index.md",
+    "definition": "skills/tailrocks-skill-create/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-create/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-refactor",
+    "description": " Use only when the user explicitly requests this skill. Restructure skill ownership while preserving observable behavior and public contracts. Do not use for semantic edits or contract-breaking migration.",
+    "argumentHint": "<skill or skill family> <transformation>",
+    "overview": "skills/tailrocks-skill-refactor/index.md",
+    "definition": "skills/tailrocks-skill-refactor/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-refactor/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-update",
+    "description": " Use only when the user explicitly requests this skill. Improve an existing skill in place while preserving its responsibility and public contract. Includes applying selected audit findings; excludes split, merge, rename, and migration.",
+    "argumentHint": "<skill name>",
+    "overview": "skills/tailrocks-skill-update/index.md",
+    "definition": "skills/tailrocks-skill-update/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-update/SKILL.md"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "tailrocks-skill-audit",
+    "description": "Use only when the user explicitly requests this skill. Check or review one skill or the portfolio and report behavioral, structural, efficiency, portability, security, evidence, and overlap defects. Read-only: fixes route to tailrocks-skill-update, restructuring to tailrocks-skill-refactor.",
+    "argumentHint": "<skill name>|all",
+    "overview": "skills/tailrocks-skill-audit/index.md",
+    "definition": "skills/tailrocks-skill-audit/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-audit/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-create",
+    "description": "Use only when the user explicitly requests this skill. Make a new agent skill from evidence, scaffolding it in the target repository's policy. New responsibilities only: existing-skill fixes belong to tailrocks-skill-update, restructuring to tailrocks-skill-refactor, mechanical gates to validators.",
+    "argumentHint": "<capability or observed failure>",
+    "overview": "skills/tailrocks-skill-create/index.md",
+    "definition": "skills/tailrocks-skill-create/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-create/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-refactor",
+    "description": "Use only when the user explicitly requests this skill. Split, merge, or combine skills and restructure ownership with behavior and public contracts frozen. Topology only: semantic fixes belong to tailrocks-skill-update. Contract-breaking migration needs separately scoped authorization.",
+    "argumentHint": "<skill or skill family> <transformation>",
+    "overview": "skills/tailrocks-skill-refactor/index.md",
+    "definition": "skills/tailrocks-skill-refactor/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-refactor/SKILL.md"
+  },
+  {
+    "name": "tailrocks-skill-update",
+    "description": "Use only when the user explicitly requests this skill. Fix or improve an existing skill in place, including applying selected audit findings, with responsibility and public contract unchanged. In-place only: split, merge, rename belong to tailrocks-skill-refactor; migration needs separate authorization.",
+    "argumentHint": "<skill name>",
+    "overview": "skills/tailrocks-skill-update/index.md",
+    "definition": "skills/tailrocks-skill-update/definition.md",
+    "source": "https://github.com/tailrocks/tailrocks-skill-authoring-skills/blob/main/skills/tailrocks-skill-update/SKILL.md"
+  }
+]
