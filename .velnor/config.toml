@@ -14,4 +14,3 @@ exclude = ["skills/**/assets/**"]
 
 [workflow.verify]
 jobs = ["alint", "strict-json", "frontmatter-id", "link-check"]
-lychee_args = ["--offline", "--include-fragments"]
