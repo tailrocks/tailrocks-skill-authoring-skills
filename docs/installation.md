@@ -1,6 +1,6 @@
 # Installation
 
-`tailrocks-skill-authoring-skills` version `0.29.0` contains 4 skills.
+`tailrocks-skill-authoring-skills` version `0.29.1` contains 4 skills.
 The package source is [tailrocks/tailrocks-skill-authoring-skills][package].
 The [Tailrocks catalog][catalog] pins one upstream commit per package.
 
