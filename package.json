@@ -1,6 +1,6 @@
 {
   "name": "tailrocks-skill-authoring-skills",
-  "version": "0.29.0",
+  "version": "0.29.1",
   "description": "Create, audit, update, and refactor agent skills while preserving clear ownership, contracts, routing, evidence, and portability.",
   "private": true,
   "type": "module",
@@ -20,7 +20,8 @@
     "AGENTS.md",
     "CHANGELOG.md",
     "LICENSE",
-    "scripts"
+    "scripts",
+    "bun.lock"
   ],
   "license": "Apache-2.0",
   "repository": "https://github.com/tailrocks/tailrocks-skill-authoring-skills",
@@ -32,5 +33,6 @@
     "skills": [
       "./skills"
     ]
-  }
+  },
+  "packageManager": "bun@1.4.4"
 }

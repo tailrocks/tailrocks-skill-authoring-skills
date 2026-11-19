@@ -1,6 +1,6 @@
 # Compatibility and verification
 
-`tailrocks-skill-authoring-skills` version `0.29.0` publishes 4 skills from
+`tailrocks-skill-authoring-skills` version `0.29.1` publishes 4 skills from
 one `skills/<id>/SKILL.md` tree. Each skill keeps its references, scripts,
 and assets in the installed package.
 
