@@ -17,13 +17,15 @@ All four skills are manual-only and need an explicit human command:
 
 ## Guides
 
-- `installation.md` installs the package on eight coding agents.
-- `usage.md` shows how to select each skill and what each skill
-  returns.
-- `compatibility.md` records the test result of each client route.
-- `maintenance.md` lists the checks, the policy version, and the
-  release procedure.
-- `troubleshooting.md` fixes common install and selection failures.
+- [Installation](installation.md) gives the native host routes.
+- [Usage](usage.md) shows how to select a skill and use its arguments.
+- [Runtime requirements](runtime.md) lists the tools and packaged resources.
+- [Package structure](architecture.md) explains file ownership.
+- [Model choices](models.md) explains role selection and effort.
+- [Compatibility](compatibility.md) records host behavior and limits.
+- [Verification](verification.md) lists package checks and observed evidence.
+- [Maintenance](maintenance.md) gives generator and release procedures.
+- [Troubleshooting](troubleshooting.md) helps diagnose installation or use.
 
 ## Skills
 
@@ -39,7 +41,4 @@ Each skill body lives in its own directory under `skills/`. Read
 
 ## Requirements
 
-Skill-authoring work needs a shell, a text editor, and Git. The
-work needs no hosted service. Before install, vet the package: read
-`plugin.json`, the host manifests, and the four files under
-`skills/`.
+See [runtime requirements](runtime.md) for the tools and files the skills use.

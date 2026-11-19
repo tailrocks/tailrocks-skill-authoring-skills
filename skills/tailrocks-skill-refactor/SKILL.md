@@ -2,10 +2,7 @@
 name: tailrocks-skill-refactor
 description: >-
   Use only when the user explicitly requests this skill. Split, merge, rename, or combine skills and restructure ownership with behavior preserved. Topology only: semantic fixes belong to tailrocks-skill-update.
-argument-hint: "<skill or skill family> <transformation>"
-disable-model-invocation: true
 license: Apache-2.0
-user-invocable: true
 ---
 
 # Skill Refactor
@@ -23,6 +20,9 @@ explicit authorization. This skill records every consumer of the
 changed names before it changes them.
 
 ## Before you start
+
+When choosing a model, reasoning effort, or delegation route, read
+[model and reasoning choices](references/model-routing.md).
 
 Get the source skills and the transformation from the user
 invocation. Resolve every relative link in this file against the

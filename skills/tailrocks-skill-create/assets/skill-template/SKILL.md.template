@@ -1,45 +1,27 @@
 ---
 name: <skill-name>
 description: >-
-  Use only when the user explicitly requests this skill. <Triggers only:
-  the user own verbs, symptoms, situations, and artifact names that
-  select this skill, plus the do-not-use boundary that names the
-  owning skill. Third person, at most 1024 chars total, key triggers
-  first. Never a workflow summary.>
-# when_to_use: extra trigger phrases — 2-4 example user requests in
-# the user own words plus sibling routing ("Not for <sibling
-# trigger> — that belongs to <owning skill>"). Appended to
-# description in the listing; counts toward the same 1536-char cap.
-# Kimi: whenToUse. Grok: when-to-use plus paths.
-# Amp: model-invoked; repo dir name must equal frontmatter name.
-# OpenCode v2 and Antigravity ignore unknown keys (manual-only flags
-# dead there — the guard sentence alone holds the boundary). Muse
-# ids allow underscore; validate with `muse skills validate <path>`.
-# Portable keys: name, description, license, compatibility,
-# metadata, allowed-tools. argument-hint, disable-model-invocation,
-# user-invocable, and when_to_use are host extensions. Kimi: use
-# arguments: with $<name> expansion instead of argument-hint; never
-# type: flow on an invokable skill.
-# arguments:        # Kimi named params, e.g. `target mode` — the body
-#   - target        # reads each as $<name> (uncomment when the body
-#   - mode          # takes named arguments).
-argument-hint: "<arguments>"
-disable-model-invocation: true
+  Use only when the user explicitly requests this skill.
+  Replace this sentence with the task, user phrases, and distinguishing
+  artifact that select this skill.
 license: Apache-2.0
-user-invocable: true
 ---
 
 # <Title>
 
 ## Use this skill
 
-<Selection conditions: when the user selects this skill, its
-argument shape, and its exclusions that name the owning skills.>
+Use only when the user explicitly requests this skill.
+
+<Name the triggering request and any nearby request another skill owns.>
 
 ## Before you start
 
-<Get the inputs from the user invocation. State key facts and
-authority: what the skill reads, writes, and never touches.>
+<Give the accepted argument syntax. Identify required targets, optional
+flags, repeatable values, and defaults that the workflow supports.
+Remove this placeholder if the skill takes no arguments.>
+
+<State which inputs the skill needs and which actions the user authorized.>
 
 The user instructions take precedence over the guidelines in this
 skill. When explicit user instructions conflict with the skill

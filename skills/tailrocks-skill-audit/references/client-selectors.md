@@ -1,41 +1,33 @@
-# Client selectors (explicit invocation)
+# Client selectors for explicit invocation
 
-## Honored forms
+Use the form for the installed package. Inspect the host's own listing
+when names collide. Preserve the user's requested scope and arguments.
 
-- **Codex CLI:** `$<skill>` bare, `/skills` picker. Only
-  documented explicit forms.
-- **Claude Code:** `/<skill>`, `/<plugin>:<skill>`. Leading
-  `/name` runs directly. After prose it only permits that turn.
-- **Kimi:** `/skill:<name>`. Only form. `/<name>` is confirmed
-  absent.
-- **Muse:** `/` picker plus `/<skill>`. Bare slash verified.
-  `/<plugin>:<skill>` is unverified.
-- **Grok Build:** `/<skill>`, `/<plugin>:<skill>`. Plus `/local:`
-  and `/user:` scope qualifiers.
-- **Amp:** model-invoked from name plus description listing (no
-  slash). Plugin-bundled skills address as `<plugin>:<skill>`.
-- **OpenCode v2:** prose `Use the X skill…` through the `skill`
-  tool. No slash for skills. Gate is `permission.skill: ask`.
-- **Antigravity CLI:** `/<skill>` (CLI auto-converts), `/skills
-  list`. Plugin skills use `/<plugin>:<skill>`. Contract is `name`
-  plus `description` only.
+- **Claude Code.** Use `/<plugin-id>:<skill-id>` for a bundled skill.
+  Standalone skills use `/<skill-id>`.
+- **Codex CLI.** Use `$<skill-id>` or select the skill from `/skills`.
+  Use the same bare dollar selector in the picker prompt.
+- **Grok Build.** Use `/<skill-id>` or the qualified shortcut shown by
+  `grok inspect --json` under `invocableAs`.
+- **Muse Code.** Use `/<skill-id>` or select the entry shown by the
+  slash picker.
+- **omp.** With skill commands enabled, use `/skill:<skill-id>`. If
+  names collide, check `omp skill list --json` for the resolved name.
+  The qualified form is `/skill:<plugin-id>/<skill-id>`.
+- **OpenCode V2.** Select the installed registry entry with `@<skill-id>`.
+  The Tailrocks server plugin supplies its ID and resource path.
+- **Amp.** Ask Amp to load `<plugin-id>:<skill-id>`. The directory plugin
+  registers that qualified name even for skills hidden from the model list.
+- **Antigravity CLI.** Use `/<skill-id>` in the session.
+- **pi.** Use `/skill:<skill-id>` with skill commands enabled.
+- **Kimi Code.** For a bundled skill use `/skill:<plugin-id>:<skill-id>`.
 
-## Wrong folklore — never author these
+## Authoring checks
 
-- **`$plugin:skill` in Codex is wrong.** Zero occurrences exist in
-  official docs. Namespacing is internal-only. Same-name collisions
-  resolve through the picker. Use bare `$<skill>` in
-  `default_prompt` and all docs.
-- **`$...` in Claude Code is not invocation.** `$ARGUMENTS`, `$0`,
-  and `$N` are argument-substitution placeholders inside skill
-  content only.
-- **Muse `/<plugin>:<skill>` is unverified.** It is absent from
-  official docs. Mark verify-before-rely anywhere it is written.
-- **No default prompt concept exists** in Claude Code, Muse, Grok,
-  or Kimi. Only Codex defines `interface.default_prompt`. It does
-  not participate in implicit matching.
-- **`argument-hint` drives no client triggering.** It is a display
-  hint only.
-- **Amp `plugin:skill` applies to plugin-bundled skills only.**
-  Bare skills load by model decision from the name plus description
-  listing, never through a qualifier.
+Keep the canonical description and input syntax readable on every host.
+Claude's argument placeholders belong to that host. Codex's picker prompt
+belongs in `agents/openai.yaml`. Neither field controls cross-host routing.
+Use a host's own selector only when its package or picker exposes it.
+
+For a manual skill, check the explicit user request before starting work.
+A qualified name in model text supplies no user authorization.

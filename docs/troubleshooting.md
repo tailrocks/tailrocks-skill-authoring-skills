@@ -30,12 +30,14 @@ Fix: keep one copy. Always use the qualified id.
 
 ## Manual-only skill starts without a human command
 
-Cause: the client cannot enforce manual-only entry. Amp,
-Antigravity, and Muse Code document no enforcement. OpenCode V1
-ignores the frontmatter flags. Fix: invoke all four skills only
-through an explicit human command. On OpenCode V1, set
-`permission.skill` to `ask`. On Kimi, audit enabled plugins. A
-`sessionStart.skill` injection can bypass the gate.
+Each of the four skills requires an explicit user request before any action.
+Check which plugin or skill copy the host loaded. The Amp plugin registers
+these skills with `listed: false`, and the OpenCode V2 plugin sets
+`autoinvoke: false`. Both keep explicit selection available.
+
+On OpenCode V1, `permission.skill: ask` can add a tool approval.
+In Kimi, inspect enabled plugins for `sessionStart.skill` injection.
+A plugin can load skill text. Only the user's request authorizes execution.
 
 ## Kimi reads the wrong skill root
 

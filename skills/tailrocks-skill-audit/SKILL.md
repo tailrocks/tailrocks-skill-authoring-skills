@@ -2,10 +2,7 @@
 name: tailrocks-skill-audit
 description: >-
   Use only when the user explicitly requests this skill. Audit one skill or the portfolio and report description, router, reference, evidence, wiring, and overlap defects. Read-only: fixes route to tailrocks-skill-update, restructuring to tailrocks-skill-refactor.
-argument-hint: "<skill name>|all"
-disable-model-invocation: true
 license: Apache-2.0
-user-invocable: true
 ---
 
 # Skill Audit
@@ -23,6 +20,9 @@ belong to the code-quality audit skills. Skill fixes belong to
 `tailrocks-skill-create`.
 
 ## Before you start
+
+When choosing a model, reasoning effort, or delegation route, read
+[model and reasoning choices](references/model-routing.md).
 
 Get the mode from the user invocation: one skill name or `all`.
 When the previous report exists, read it before you assign finding

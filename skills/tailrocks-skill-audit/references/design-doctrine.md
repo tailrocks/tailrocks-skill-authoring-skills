@@ -127,123 +127,48 @@ reference never restates them.
 
 ## The description
 
-The description is the trigger, nothing else. Only `name` plus
-`description` preload on every turn. The body loads only after
-selection.
+Write the task and the situations that select it in `description`.
+Use the requester's verbs, artifact names, file types, and symptoms.
+Keep the primary trigger early because hosts can shorten discovery text.
+Name a sibling skill when it owns a likely alternative request.
+Keep procedures in the body.
 
-- **Capability-first, third person.** Open with what the skill does
-  as a concrete third-person capability clause, never `I can…` or
-  `You can…`. Pattern: `<capability clause>. Use when <trigger
-  contexts>.`
-- **Trigger verbs are the user words, front-loaded.** Include the
-  literal nouns and verbs users say: task verbs, artifact names,
-  file types, cross-platform aliases. Troubleshooting step number
-  one for "skill not triggering" on every client is "description
-  lacks the keywords users naturally say". Key use case plus
-  trigger words go first. Truncation cuts the tail first.
-- **Sibling routing, not just behavior guards.** Each description
-  names its own trigger and disambiguates its nearest siblings by
-  object cardinality and file-versus-instance. A `Do not X` clause
-  that never names the owning skill routes nowhere. Name it.
-- **Procedures and workflow summaries are banned.** Middle sentences
-  that describe behavior are dead weight for matching and become a
-  shortcut the agent reads instead of the body. Also banned: XML
-  tags, vague scope, instructions.
-- **Caps.** `description` hard cap is 1024 characters (Agent Skills
-  spec). Keep key triggers inside the first 250 characters. Claude
-  Code truncates `description` plus `when_to_use` at 1536 per entry.
-  Codex lists name plus description plus path under min(2 percent
-  context, 8000 characters): descriptions shorten first, and skills
-  may drop with a warning.
-- Manual-only trees add their guard sentence verbatim and budget
-  the rest (250 characters after the guard, here).
-- **Pushy beats polite.** Agents undertrigger: they skip skills
-  that help. Name trigger contexts explicitly, including cases
-  where the user never says the domain word.
+For manual skills, state the explicit request requirement in the
+description. Repeat it before the first action. Preserve the owner's
+decision about implicit use when changing an existing skill.
 
-### The `when_to_use` trigger field
+### Triggers and arguments
 
-`when_to_use` (Claude Code extension, snake_case) holds extra
-trigger phrases and example requests. The listing appends it to
-`description`. It counts toward the same 1536-char cap. Codex
-ignores unknown frontmatter: keep portable triggers in
-`description` itself. Use this field only for overflow and
-negatives.
+Put trigger phrases in the canonical description. For example, a release
+audit can mention “check the release tag” and “verify the published version.”
+Name the target and optional flags under the body's input section. State
+when a value is required, repeatable, or optional.
 
-Template:
+Keep host-specific display hints and selection keys in their native
+configuration or adapter. The portable validator rejects extra frontmatter
+keys. A picker prompt helps a person select the skill. Only the user's
+request can satisfy an explicit-entry guard.
 
-```yaml
-when_to_use: >-
-  <2-4 example user requests in the user own words>.
-  Not for <nearest sibling trigger> — that belongs to <owning skill>.
-  Not for <second overlap> — that belongs to <owning skill>.
-```
+### Host invocation policy
 
-Rules: example requests must read like typed prompts, not
-paraphrased capabilities. Sibling routing lives here when
-`description` is full. Kimi accepts `whenToUse` (aliases
-`when-to-use`, `when_to_use`) as its dedicated trigger field.
-Grok accepts `when-to-use` and `when_to_use` plus `paths` globs.
-
-### Trigger fields by client
-
-Match text and gates differ per host. Triggers portable everywhere
-live in `description` itself.
-
-- **Claude Code.** Match text: `description` plus `when_to_use`
-  (appended, 1536 chars combined). `paths` globs gate by file.
-  `disable-model-invocation: true` removes from context.
-  `user-invocable: false` hides `/` entry only.
-- **Codex.** Match text: `description` only (`name` aids).
-  `agents/openai.yaml` carries `allow_implicit_invocation`.
-  `default_prompt` and `short_description` are picker UI, never
-  matching.
-- **Muse.** Match text: `name` plus `description`.
-  `disable-model-invocation` and `user-invocable` are accepted
-  but not enforced.
-- **Kimi.** Match text: `description` plus `whenToUse` (plus
-  aliases). `disableModelInvocation` gates entry. `type: flow` is
-  manual-only, never on an invokable skill. Nesting cap is 3. A
-  directory `SKILL.md` without `name` plus `description` fails
-  parsing. Declare `arguments:` for every `$<name>` the body reads.
-- **Antigravity CLI.** Match text: `name` plus `description`
-  only. No other trigger keys exist on this host.
-- **Grok Build.** Match text: `description` plus `when-to-use`
-  plus `paths`. `user-invocable` hides from the model too unless
-  literally `true`. `allowed-tools` accepted, not enforced.
-- **OpenCode V1.** Match text: `name` plus prose match through
-  the `skill` tool. Ignores `disable-model-invocation` and
-  `user-invocable`. Gate is `permission.skill: ask`.
-- **OpenCode V2.** Selection uses the path-derived id with `@`
-  mention or `skill({id})`. It keeps `disable-model-invocation`
-  among its keys.
-- **Amp.** Match text: `name` plus `description` listing. Model
-  decides loads. First-`name` wins across roots. No
-  user-invokable skills (model-invoked only). Repo skills require
-  dir name equal to frontmatter `name`.
+- Codex reads `policy.allow_implicit_invocation` from `agents/openai.yaml`.
+  Use `false` for a manual skill. Its picker prompt uses bare `$<skill>`.
+- The Tailrocks OpenCode V2 adapter maps manual entry to
+  `autoinvoke: false`. Users can select the exact `@<skill-id>`.
+- The Tailrocks Amp directory plugin maps manual entry to `listed: false`.
+  Ask Amp to load the qualified `<plugin-id>:<skill-id>` name.
+- Other hosts expose different selectors and permissions. Keep the intent
+  guard in the skill even when a host has a native selection switch.
 
 ### YAML hygiene
 
-Triggering dies silently on malformed metadata:
-
-- Opening `---` is the file first line.
-- Malformed frontmatter loads with empty metadata: manual `/name`
-  still works while auto-trigger silently dies. Debug with
-  `claude --debug` and `claude plugin validate`.
-- `name`: 1 to 64 chars, lowercase alphanumerics plus hyphens, no
-  leading, trailing, or consecutive hyphens, matches the directory
-  name, no reserved words (`anthropic`, `claude`).
-- `description`: non-empty, at most 1024 chars, no XML tags.
-- Gate every description change with five validators. Run the spec
-  check, `muse skills validate <path>`, `claude plugin validate`,
-  `grok plugin validate`, and `agy plugin validate`.
-- Host-only execution fields never port. `model` overrides the
-  session model. `context: fork` plus `agent` runs detached and
-  never stacks: such instructions must stand alone with zero
-  conversation history. Skill `hooks` persist for the session and
-  conflict with manual-only policy. `disallowed-tools` removes
-  tools while active. `arguments:` maps named `$name` placeholders
-  to argument positions.
+- Put the opening `---` on the first line and close the frontmatter.
+- Match `name` to the directory. Use 1 to 64 lowercase letters, digits,
+  and internal hyphens. Do not use consecutive hyphens.
+- Give `description` 1 to 1,024 characters. Exclude angle brackets.
+- Keep the declared license and valid string-valued provenance metadata.
+- Parse and validate the complete skill. Check the installed host entry
+  and its policy independently. Follow the target's validation commands.
 
 ## Naming and examples
 
