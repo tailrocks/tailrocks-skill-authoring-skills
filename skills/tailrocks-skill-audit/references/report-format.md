@@ -48,16 +48,18 @@ file and line or quoted-phrase evidence:
 - `description` is non-empty, at most 1024 characters, and has no
   XML tags. `name` has 1 to 64 characters, lowercase alphanumerics
   plus hyphens, and matches the directory.
-- Key triggers stay inside the first 250 characters. `description`
-  plus `when_to_use` stays within 1536 characters.
-- Manual-only trees carry the guard sentence verbatim.
+- Key triggers appear early in the portable description. The input
+  section states any required arguments, accepted flags, and defaults.
+- Manual skills state their explicit request requirement in the
+  description and before the first action.
 - Every `Do not X` names the owning skill. Procedures and workflow
   summaries are absent.
 - Each body states user-instruction precedence with its refusal
   carve-out (see `runtime-trust.md`).
-- Flag coherence: `disable-model-invocation` and
-  `allow_implicit_invocation` agree. OpenCode, Antigravity, and
-  Muse exposure is explicit, and Amp observes no gating field.
+- Check `agents/openai.yaml` against the owner's invocation policy.
+  Manual skills set `policy.allow_implicit_invocation: false`. Check
+  the OpenCode adapter's `autoinvoke` and Amp's `listed` flags where
+  those adapters exist. Keep host-specific keys out of canonical YAML.
 - `agents/openai.yaml` uses bare `$<skill>`. `$plugin:skill`
   anywhere is a WIRE finding. `default_prompt` is picker framing,
   never a trigger. Keys are snake_case.
@@ -66,8 +68,8 @@ file and line or quoted-phrase evidence:
   and `websiteURL`.
 - The portable root manifest carries the Agent Plugins 1.0.0 schema
   id. It carries no `skills` field.
-- `version` matches across root `plugin.json` and the Claude and
-  Kimi host manifests.
+- Match the portable package version to the Claude and Kimi manifests.
+  Check `package.json` when the repository ships a native npm package.
 - The frontmatter `---` is line 1 and the YAML parses. The
   `claude plugin`, `muse skills`, `muse plugins`, `grok plugin`,
   and `agy plugin` validators are green.

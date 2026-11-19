@@ -2,10 +2,7 @@
 name: tailrocks-skill-update
 description: >-
   Use only when the user explicitly requests this skill. Fix or improve an existing skill in place, including selected audit findings, with responsibility and public contract unchanged. In-place only: split, merge, rename belong to tailrocks-skill-refactor.
-argument-hint: "<skill name>"
-disable-model-invocation: true
 license: Apache-2.0
-user-invocable: true
 ---
 
 # Skill Update
@@ -23,6 +20,9 @@ failure policy. Splits, merges, and renames belong to
 `tailrocks-skill-create`.
 
 ## Before you start
+
+When choosing a model, reasoning effort, or delegation route, read
+[model and reasoning choices](references/model-routing.md).
 
 Get the skill name and the defect from the user invocation. Resolve
 every relative link in this file against the directory that holds

@@ -2,10 +2,7 @@
 name: tailrocks-skill-create
 description: >-
   Use only when the user explicitly requests this skill. Make a new agent skill for a new responsibility. New responsibilities only: existing-skill fixes belong to tailrocks-skill-update, restructuring to tailrocks-skill-refactor, mechanical gates to validators.
-argument-hint: "<capability or observed failure>"
-disable-model-invocation: true
 license: Apache-2.0
-user-invocable: true
 ---
 
 # Skill Create
@@ -22,6 +19,9 @@ rules belong in a gate, local conventions in their instruction
 file. This skill never changes an existing skill.
 
 ## Before you start
+
+When choosing a model, reasoning effort, or delegation route, read
+[model and reasoning choices](references/model-routing.md).
 
 Get the requested capability from the user invocation. Resolve
 every relative link in this file against the directory that holds
