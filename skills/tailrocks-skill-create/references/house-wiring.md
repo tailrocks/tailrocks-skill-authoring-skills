@@ -55,11 +55,9 @@ Absent client or catalog surfaces stay absent.
   and compatibility record by hand.
 - **Install guide:** add per-client install notes only when the
   skill needs them.
-- **Version lockstep:** bump `version` in root `plugin.json`,
-  `.claude-plugin/plugin.json`, and `.kimi-plugin/plugin.json`
-  together. Match the native package version in `package.json` when
-  present. Root `plugin.json` is the source of truth. Follow the
-  repository's release procedure.
+- **Version lockstep:** Change `version` in the portable root `plugin.json`.
+  Run the shared package generator to update the Claude, Kimi, and Antigravity
+  manifests and `package.json`. Follow the repository's release procedure.
 
 ## Client packaging
 
@@ -68,17 +66,18 @@ commands against the installed build before relying on them.
 
 ### Marketplace packages
 
-- **Claude Code and Grok Build.** Keep the Claude plugin manifest. The
-  Tailrocks Claude catalog pins a Git URL, full commit SHA, and version.
+- **Claude Code and Grok Build.** Tailrocks keeps `.claude-plugin/plugin.json`
+  for these clients. The Claude catalog pins a Git URL, full commit SHA,
+  and version.
 - **Codex and Muse Code.** Keep the portable root `plugin.json`. The
   Tailrocks Codex catalog carries the full commit in `source.ref`.
   Muse imports immediate `skills/<id>/SKILL.md` entries. Check its snapshot
   for skipped packages.
 - **omp.** Its plugin manager reads the Claude catalog. A skill command
   uses the resolved name shown by `omp skill list --json`.
-- **Kimi Code.** Set `skills` to `./skills/` in the Kimi plugin manifest.
-  Keep host interface fields in that manifest. Its marketplace entry
-  points to the pinned commit.
+- **Kimi Code.** Keep `.kimi-plugin/plugin.json` with `skills` set to
+  `./skills/`. Put Kimi interface fields in this manifest. Its marketplace
+  entry points to the pinned commit.
 
 ### Direct packages
 
@@ -88,8 +87,9 @@ commands against the installed build before relying on them.
 - **Amp.** Install the complete directory plugin. Its root `index.js`
   registers each skill directory. Map manual entry to `listed: false`.
   Ask Amp to load `<plugin-id>:<skill-id>` explicitly.
-- **Antigravity CLI.** Supply the pinned local checkout to
-  `agy plugin install`. Keep the portable root manifest and skill tree.
+- **Antigravity CLI.** Keep the native `.antigravity-plugin/plugin.json`
+  and the root skill tree. The native manifest takes precedence over the
+  portable root manifest. Supply the pinned checkout to `agy plugin install`.
 - **pi.** Declare the skill directories under `pi.skills` in
   `package.json`. Install the complete Git package at its selected commit.
 
@@ -114,6 +114,7 @@ can restrict discovery or selection independently of that guard.
 ## Validation
 
 ```sh
+python3 scripts/validate-package.py --check
 alint check
 # plus the strict-JSON check and the frontmatter/ID check
 npx --yes markdownlint-cli2@0.23.3 "**/*.md"
@@ -134,10 +135,12 @@ manifests and rejects duplicate keys. The frontmatter and ID check
 matches names to directories and validates IDs. The markdownlint
 check examines prose shape. `claude plugin validate`
 exits 0 on pass, 1 on fail, and 2 on tool error. `grok plugin
-validate` loads the manifest through `.claude-plugin/`. `agy plugin
-validate` checks skill inventory plus manifest shape. `muse skills
-validate` checks one skill and accepts extras. `muse plugins
-validate` checks the portable or Claude manifest path.
+validate` checks the package manifest and component layout. `agy plugin
+validate` checks the native manifest and skill inventory. Its warnings can
+report a shadowed root `plugin.json` and an ignored root `AGENTS.md`.
+Antigravity loads plugin rules from `rules/`. `muse skills validate`
+checks one skill and accepts extras. `muse plugins validate` checks
+its selected manifest.
 
 Run each gate once. Repair only a matched, in-scope error. Stop
 immediately for an unmatched error, an unavailable tool, or a
@@ -154,8 +157,8 @@ Editing an existing skill adds constraints beyond the create path:
 - **Strengthen over append.** Prefer making an existing section
   state the new obligation to adding a sibling section that gestures
   at it.
-- **A router has at most 200 body lines.** At the limit, the next
-  addition replaces or extracts existing material.
+- **Use at most 500 total lines in `SKILL.md`, including frontmatter.**
+  At the limit, replace or extract material before adding an instruction.
 - **Rerun every affected static check** after a router change. A
   new section changes every behavior in the file, so the check
   nearest the edit is not the only one at risk.

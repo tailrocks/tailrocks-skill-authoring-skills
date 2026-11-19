@@ -26,9 +26,9 @@ Consequences, each binding:
   four-idea paragraph, it surfaces only sometimes. That
   intermittency looks like a flaky check instead of the prose defect
   it is.
-- A router has at most 200 body lines. At the limit, an addition
-  replaces or extracts existing material. Two sections that gesture
-  at one obligation are weaker than one that states it.
+- Use at most 500 total lines in `SKILL.md`, including frontmatter.
+  At the limit, replace or extract material before adding an instruction.
+  State each obligation once.
 - References hang one level deep off the router. A reference
   never chains through another reference. Flatten the chain. Route
   each file directly from the router with its when-to-read
